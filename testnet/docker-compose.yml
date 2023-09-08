@@ -1,0 +1,147 @@
+version: '3.3'
+name: tapd-network
+services:
+  alice:
+    environment:
+      USERID: ${USERID:-1000}
+      GROUPID: ${GROUPID:-1000}
+    stop_grace_period: 2m
+    image: polarlightning/lnd:0.16.4-beta
+    container_name: alice-lnd
+    hostname: alice
+    command: >-
+      lnd --noseedbackup 
+      --trickledelay=5000 
+      --alias=alice 
+      --externalip=alice
+      --tlsextradomain=alice 
+      --tlsextradomain=alice-lnd
+      --listen=0.0.0.0:9735 
+      --rpclisten=0.0.0.0:10009 
+      --restlisten=0.0.0.0:8080
+      --tlsautorefresh
+
+      --bitcoin.node=neutrino
+      --bitcoin.active
+      --bitcoin.testnet
+
+      --neutrino.addpeer=lnd.bitrefill.com
+      --neutrino.addpeer=35.196.85.107
+      --neutrino.addpeer=3.18.26.129
+      --neutrino.addpeer=109.235.70.143
+      --neutrino.addpeer=testnet1-btcd.zaphq.io
+      --neutrino.addpeer=testnet2-btcd.zaphq.io
+      --neutrino.addpeer=dev.conner.money
+      --feeurl=https://nodes.lightning.computer/fees/v1/btc-fee-estimates.json
+    restart: always
+    volumes:
+      - ./volumes/lnd/alice:/home/lnd/.lnd
+    expose:
+      - '8080'
+      - '10009'
+      - '9735'
+    ports:
+      - '8081:8080'
+      - '10001:10009'
+      - '9735:9735'
+  alice-tap:
+    environment:
+      USERID: ${USERID:-1000}
+      GROUPID: ${GROUPID:-1000}
+    stop_grace_period: 2m
+    image: polarlightning/tapd:0.2.3-alpha
+    container_name: alice-tap
+    hostname: alice-tap
+    command: >-
+      tapd 
+      --network=testnet 
+      --debuglevel=debug 
+      --tlsextradomain=alice-tap
+      --tlsextradomain=alice-tap 
+      --rpclisten=0.0.0.0:10029
+      --restlisten=0.0.0.0:8089 
+      --lnd.host=alice-lnd:10009
+      --lnd.macaroonpath=/home/tap/.lnd/data/chain/bitcoin/testnet/admin.macaroon
+      --lnd.tlspath=/home/tap/.lnd/tls.cert
+    restart: always
+    volumes:
+      - ./volumes/lnd/alice:/home/tap/.lnd
+      - ./volumes/tapd/alice-tap:/home/tap/.tapd
+    expose:
+      - '8089'
+      - '10029'
+    ports:
+      - '8289:8089'
+      - '12029:10029'
+  bob:
+    environment:
+      USERID: ${USERID:-1000}
+      GROUPID: ${GROUPID:-1000}
+    stop_grace_period: 2m
+    image: polarlightning/lnd:0.16.4-beta
+    container_name: bob-lnd
+    hostname: bob
+    command: >-
+      lnd --noseedbackup 
+      --trickledelay=5000 
+      --alias=bob 
+      --externalip=bob
+      --tlsextradomain=bob 
+      --tlsextradomain=bob-lnd
+      --listen=0.0.0.0:9735 
+      --rpclisten=0.0.0.0:10009 
+      --restlisten=0.0.0.0:8080
+      --tlsautorefresh
+
+      --bitcoin.node=neutrino
+      --bitcoin.active
+      --bitcoin.testnet
+
+      --neutrino.addpeer=lnd.bitrefill.com
+      --neutrino.addpeer=35.196.85.107
+      --neutrino.addpeer=3.18.26.129
+      --neutrino.addpeer=109.235.70.143
+      --neutrino.addpeer=testnet1-btcd.zaphq.io
+      --neutrino.addpeer=testnet2-btcd.zaphq.io
+      --neutrino.addpeer=dev.conner.money
+      --feeurl=https://nodes.lightning.computer/fees/v1/btc-fee-estimates.json
+    restart: always
+    volumes:
+      - ./volumes/lnd/bob:/home/lnd/.lnd
+    expose:
+      - '8080'
+      - '10009'
+      - '9735'
+    ports:
+      - '8082:8080'
+      - '10002:10009'
+      - '9736:9735'
+  bob-tap:
+    environment:
+      USERID: ${USERID:-1000}
+      GROUPID: ${GROUPID:-1000}
+    stop_grace_period: 2m
+    image: polarlightning/tapd:0.2.3-alpha
+    container_name: bob-tap
+    hostname: bob-tap
+    command: >-
+      tapd 
+      --network=testnet 
+      --debuglevel=debug 
+      --tlsextradomain=bob-tap
+      --tlsextradomain=bob-tap 
+      --rpclisten=0.0.0.0:10029
+      --restlisten=0.0.0.0:8089 
+      --lnd.host=bob-lnd:10009
+      --lnd.macaroonpath=/home/tap/.lnd/data/chain/bitcoin/testnet/admin.macaroon
+      --lnd.tlspath=/home/tap/.lnd/tls.cert
+    restart: always
+    volumes:
+      - ./volumes/lnd/bob:/home/tap/.lnd
+      - ./volumes/tapd/bob-tap:/home/tap/.tapd
+    expose:
+      - '8089'
+      - '10029'
+    ports:
+      - '8290:8089'
+      - '12030:10029'

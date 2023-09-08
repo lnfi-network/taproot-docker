@@ -1,5 +1,5 @@
 version: '3.3'
-name: tapd-network
+name: tapd-test-network
 services:
   alice:
     environment:

@@ -12,7 +12,7 @@ Minimal docker setup to run a regtest node with lnd and taro.
 ``` bash
 cd regtest
 # run docker-compose
-docker-compose up -d
+sudo docker-compose up -d
 # set auto mining(30s/block), transfer gas to alice-lnd and bob-lnd
 ./setup.sh
 ```
@@ -21,7 +21,7 @@ docker-compose up -d
 ``` bash
 cd testnet
 # run docker-compose
-docker-compose up -d
+sudo docker-compose up -d
 # TIP : need send test btc to alice-lnd and bob-lnd as gas fee
 ```
 
@@ -38,4 +38,5 @@ https://testnet-faucet.com/btc-testnet/
 
 ## Thanks
 https://hub.docker.com/r/polarlightning
+
 https://github.com/davisv7/sashimi

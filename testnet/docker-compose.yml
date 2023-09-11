@@ -32,7 +32,6 @@ services:
       --neutrino.addpeer=testnet1-btcd.zaphq.io
       --neutrino.addpeer=testnet2-btcd.zaphq.io
       --neutrino.addpeer=dev.conner.money
-      --feeurl=https://nodes.lightning.computer/fees/v1/btc-fee-estimates.json
     restart: always
     volumes:
       - ./volumes/lnd/alice:/home/lnd/.lnd
@@ -104,7 +103,6 @@ services:
       --neutrino.addpeer=testnet1-btcd.zaphq.io
       --neutrino.addpeer=testnet2-btcd.zaphq.io
       --neutrino.addpeer=dev.conner.money
-      --feeurl=https://nodes.lightning.computer/fees/v1/btc-fee-estimates.json
     restart: always
     volumes:
       - ./volumes/lnd/bob:/home/lnd/.lnd

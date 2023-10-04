@@ -6,7 +6,7 @@ services:
       USERID: ${USERID:-1000}
       GROUPID: ${GROUPID:-1000}
     stop_grace_period: 2m
-    image: polarlightning/lnd:0.16.4-beta
+    image: polarlightning/lnd:0.17.0-beta
     container_name: alice-lnd
     hostname: alice
     command: >-
@@ -91,7 +91,7 @@ services:
       USERID: ${USERID:-1000}
       GROUPID: ${GROUPID:-1000}
     stop_grace_period: 2m
-    image: polarlightning/lnd:0.16.4-beta
+    image: polarlightning/lnd:0.17.0-beta
     container_name: bob-lnd
     hostname: bob
     command: >-

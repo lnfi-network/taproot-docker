@@ -32,6 +32,11 @@ services:
       --neutrino.addpeer=testnet1-btcd.zaphq.io
       --neutrino.addpeer=testnet2-btcd.zaphq.io
       --neutrino.addpeer=dev.conner.money
+
+      --db.backend=postgres
+      --db.postgres.dsn=postgres://postgres:postgrespwd@postgres-db:5432/alice_lnd
+
+      --feeurl=https://assets.nostrassets.com/btc-testnet-fee-estimates.json
     restart: always
     volumes:
       - ./volumes/lnd/alice:/home/lnd/.lnd
@@ -62,6 +67,15 @@ services:
       --lnd.host=alice-lnd:10009
       --lnd.macaroonpath=/home/tap/.lnd/data/chain/bitcoin/testnet/admin.macaroon
       --lnd.tlspath=/home/tap/.lnd/tls.cert
+
+      --databasebackend=postgres
+      --postgres.host=postgres-db
+      --postgres.port=5432
+      --postgres.user=postgres
+      --postgres.password=postgrespwd
+      --postgres.dbname=alice_tapd
+      --postgres.maxconnections=50
+
     restart: always
     volumes:
       - ./volumes/lnd/alice:/home/tap/.lnd
@@ -103,6 +117,11 @@ services:
       --neutrino.addpeer=testnet1-btcd.zaphq.io
       --neutrino.addpeer=testnet2-btcd.zaphq.io
       --neutrino.addpeer=dev.conner.money
+
+      --db.backend=postgres
+      --db.postgres.dsn=postgres://postgres:postgrespwd@postgres-db:5432/bob_lnd
+
+      --feeurl=https://assets.nostrassets.com/btc-testnet-fee-estimates.json
     restart: always
     volumes:
       - ./volumes/lnd/bob:/home/lnd/.lnd
@@ -133,6 +152,14 @@ services:
       --lnd.host=bob-lnd:10009
       --lnd.macaroonpath=/home/tap/.lnd/data/chain/bitcoin/testnet/admin.macaroon
       --lnd.tlspath=/home/tap/.lnd/tls.cert
+      
+      --databasebackend=postgres
+      --postgres.host=postgres-db
+      --postgres.port=5432
+      --postgres.user=postgres
+      --postgres.password=postgrespwd
+      --postgres.dbname=bob_tapd
+      --postgres.maxconnections=50
     restart: always
     volumes:
       - ./volumes/lnd/bob:/home/tap/.lnd
@@ -143,3 +170,18 @@ services:
     ports:
       - '8290:8089'
       - '12030:10029'
+  postgres:
+    container_name: postgres-db
+    hostname: postgres-db
+    image: docker.io/bitnami/postgresql:14
+    expose:
+      - '5432'
+    ports:
+      - 5439:5432
+    volumes:
+      - ./volumes/postgres:/bitnami/postgresql
+      - ./postgres.init.sql:/docker-entrypoint-initdb.d/init.sql
+    environment:
+      - POSTGRESQL_USERNAME=postgres
+      - POSTGRESQL_PASSWORD=postgrespwd
+      - POSTGRESQL_DATABASE=postgres

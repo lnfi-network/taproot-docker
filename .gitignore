@@ -9,3 +9,4 @@ build/
 /.VSCodeCounter/
 testnet/volumes
 regtest/volumes
+mainnet/volumes

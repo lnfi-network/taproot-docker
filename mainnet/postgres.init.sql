@@ -1,0 +1,4 @@
+CREATE DATABASE alice_lnd;
+CREATE DATABASE alice_tapd;
+CREATE DATABASE bob_lnd;
+CREATE DATABASE bob_tapd;

@@ -8,14 +8,13 @@ services:
     stop_grace_period: 2m
     image: polarlightning/lnd:0.17.0-beta
     container_name: main-alice-lnd
-    hostname: alice
+    hostname: main-alice-lnd
     command: >-
       lnd --noseedbackup 
       --trickledelay=5000 
-      --alias=alice 
-      --externalip=alice
-      --tlsextradomain=alice 
-      --tlsextradomain=alice-lnd
+      --alias=main-alice-lnd 
+      --externalip=main-alice-lnd
+      --tlsextradomain=main-alice-lnd
       --listen=0.0.0.0:9735 
       --rpclisten=0.0.0.0:10009 
       --restlisten=0.0.0.0:8080
@@ -36,7 +35,7 @@ services:
       --neutrino.feeurl=https://nodes.lightning.computer/fees/v1/btc-fee-estimates.json
 
       --db.backend=postgres
-      --db.postgres.dsn=postgres://postgres:postgrespwd@postgres-db:5432/alice_lnd
+      --db.postgres.dsn=postgres://postgres:postgrespwd@main-postgres-db:5432/alice_lnd
 
     restart: always
     volumes:
@@ -46,17 +45,17 @@ services:
       - '10009'
       - '9735'
     ports:
-      - '8081:8080'
-      - '10001:10009'
-      - '9735:9735'
+      - '38081:8080'
+      - '40001:10009'
+      - '39735:9735'
   postgres:
     container_name: main-postgres-db
-    hostname: postgres-db
+    hostname: main-postgres-db
     image: docker.io/bitnami/postgresql:14
     expose:
       - '5432'
     ports:
-      - 5439:5432
+      - 35432:5432
     volumes:
       - ./volumes/postgres:/bitnami/postgresql
       - ./postgres.init.sql:/docker-entrypoint-initdb.d/init.sql
@@ -71,12 +70,11 @@ services:
     stop_grace_period: 2m
     image: polarlightning/tapd:0.3.0-alpha.rc1
     container_name: main-alice-tap
-    hostname: alice-tap
+    hostname: main-alice-tap
     command: >-
       tapd 
       --network=mainnet 
       --debuglevel=debug 
-      --tlsextradomain=main-alice-tap
       --tlsextradomain=main-alice-tap 
       --rpclisten=0.0.0.0:10029
       --restlisten=0.0.0.0:8089 
@@ -85,7 +83,7 @@ services:
       --lnd.tlspath=/home/tap/.lnd/tls.cert
 
       --databasebackend=postgres
-      --postgres.host=postgres-db
+      --postgres.host=main-postgres-db
       --postgres.port=5432
       --postgres.user=postgres
       --postgres.password=postgrespwd
@@ -100,5 +98,5 @@ services:
       - '8089'
       - '10029'
     ports:
-      - '8289:8089'
-      - '10029:10029'
+      - '38289:8089'
+      - '30029:10029'

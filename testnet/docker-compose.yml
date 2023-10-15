@@ -6,7 +6,7 @@ services:
       USERID: ${USERID:-1000}
       GROUPID: ${GROUPID:-1000}
     stop_grace_period: 2m
-    image: polarlightning/lnd:0.17.0-beta
+    image: lightninglabs/lnd:v0.17.0-beta
     container_name: alice-lnd
     hostname: alice
     command: >-
@@ -39,7 +39,7 @@ services:
       --feeurl=https://assets.nostrassets.com/btc-testnet-fee-estimates.json
     restart: always
     volumes:
-      - ./volumes/lnd/alice:/home/lnd/.lnd
+      - ./volumes/lnd/alice:/root/.lnd
     expose:
       - '8080'
       - '10009'
@@ -48,12 +48,12 @@ services:
       - '8081:8080'
       - '10001:10009'
       - '9735:9735'
-  alice-tap:
+  alice-tap: 
     environment:
       USERID: ${USERID:-1000}
       GROUPID: ${GROUPID:-1000}
     stop_grace_period: 2m
-    image: polarlightning/tapd:0.3.0-alpha.rc1
+    image: lightninglabs/taproot-assets:v0.3.0-alpha.rc2
     container_name: alice-tap
     hostname: alice-tap
     command: >-
@@ -65,8 +65,8 @@ services:
       --rpclisten=0.0.0.0:10029
       --restlisten=0.0.0.0:8089 
       --lnd.host=alice-lnd:10009
-      --lnd.macaroonpath=/home/tap/.lnd/data/chain/bitcoin/testnet/admin.macaroon
-      --lnd.tlspath=/home/tap/.lnd/tls.cert
+      --lnd.macaroonpath=/root/.lnd/data/chain/bitcoin/testnet/admin.macaroon
+      --lnd.tlspath=/root/.lnd/tls.cert
 
       --databasebackend=postgres
       --postgres.host=postgres-db
@@ -78,8 +78,8 @@ services:
 
     restart: always
     volumes:
-      - ./volumes/lnd/alice:/home/tap/.lnd
-      - ./volumes/tapd/alice-tap:/home/tap/.tapd
+      - ./volumes/lnd/alice:/root/.lnd
+      - ./volumes/tapd/alice:/root/.tapd
     expose:
       - '8089'
       - '10029'
@@ -91,7 +91,7 @@ services:
       USERID: ${USERID:-1000}
       GROUPID: ${GROUPID:-1000}
     stop_grace_period: 2m
-    image: polarlightning/lnd:0.17.0-beta
+    image: lightninglabs/lnd:v0.17.0-beta
     container_name: bob-lnd
     hostname: bob
     command: >-
@@ -124,7 +124,7 @@ services:
       --feeurl=https://assets.nostrassets.com/btc-testnet-fee-estimates.json
     restart: always
     volumes:
-      - ./volumes/lnd/bob:/home/lnd/.lnd
+      - ./volumes/lnd/bob:/root/.lnd
     expose:
       - '8080'
       - '10009'
@@ -138,7 +138,7 @@ services:
       USERID: ${USERID:-1000}
       GROUPID: ${GROUPID:-1000}
     stop_grace_period: 2m
-    image: polarlightning/tapd:0.3.0-alpha.rc1
+    image: lightninglabs/taproot-assets:v0.3.0-alpha.rc2
     container_name: bob-tap
     hostname: bob-tap
     command: >-
@@ -150,8 +150,8 @@ services:
       --rpclisten=0.0.0.0:10029
       --restlisten=0.0.0.0:8089 
       --lnd.host=bob-lnd:10009
-      --lnd.macaroonpath=/home/tap/.lnd/data/chain/bitcoin/testnet/admin.macaroon
-      --lnd.tlspath=/home/tap/.lnd/tls.cert
+      --lnd.macaroonpath=/root/.lnd/data/chain/bitcoin/testnet/admin.macaroon
+      --lnd.tlspath=/root/.lnd/tls.cert
       
       --databasebackend=postgres
       --postgres.host=postgres-db
@@ -162,8 +162,8 @@ services:
       --postgres.maxconnections=50
     restart: always
     volumes:
-      - ./volumes/lnd/bob:/home/tap/.lnd
-      - ./volumes/tapd/bob-tap:/home/tap/.tapd
+      - ./volumes/lnd/bob:/root/.lnd
+      - ./volumes/tapd/bob:/root/.tapd
     expose:
       - '8089'
       - '10029'

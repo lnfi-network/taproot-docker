@@ -6,7 +6,7 @@ services:
       USERID: ${USERID:-1000}
       GROUPID: ${GROUPID:-1000}
     stop_grace_period: 2m
-    image: polarlightning/lnd:0.17.0-beta
+    image: lightninglabs/lnd:v0.17.0-beta
     container_name: main-alice-lnd
     hostname: main-alice-lnd
     command: >-
@@ -39,7 +39,7 @@ services:
 
     restart: always
     volumes:
-      - ./volumes/lnd/alice:/home/lnd/.lnd
+      - ./volumes/lnd/alice:/root/.lnd
     expose:
       - '8080'
       - '10009'
@@ -68,7 +68,7 @@ services:
       USERID: ${USERID:-1000}
       GROUPID: ${GROUPID:-1000}
     stop_grace_period: 2m
-    image: polarlightning/tapd:0.3.0-alpha.rc1
+    image: lightninglabs/taproot-assets:v0.3.0-alpha.rc2
     container_name: main-alice-tap
     hostname: main-alice-tap
     command: >-
@@ -79,8 +79,8 @@ services:
       --rpclisten=0.0.0.0:10029
       --restlisten=0.0.0.0:8089 
       --lnd.host=main-alice-lnd:10009
-      --lnd.macaroonpath=/home/tap/.lnd/data/chain/bitcoin/mainnet/admin.macaroon
-      --lnd.tlspath=/home/tap/.lnd/tls.cert
+      --lnd.macaroonpath=/root/.lnd/data/chain/bitcoin/mainnet/admin.macaroon
+      --lnd.tlspath=/root/.lnd/tls.cert
 
       --databasebackend=postgres
       --postgres.host=main-postgres-db
@@ -92,8 +92,8 @@ services:
 
     restart: always
     volumes:
-      - ./volumes/lnd/alice:/home/tap/.lnd
-      - ./volumes/tapd/alice-tap:/home/tap/.tapd
+      - ./volumes/lnd/alice:/root/.lnd
+      - ./volumes/tapd/alice:/root/.tapd
     expose:
       - '8089'
       - '10029'

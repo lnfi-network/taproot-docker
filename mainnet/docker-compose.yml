@@ -69,7 +69,7 @@ services:
       USERID: ${USERID:-1000}
       GROUPID: ${GROUPID:-1000}
     stop_grace_period: 2m
-    image: lightninglabs/taproot-assets:v0.3.0-alpha.rc3
+    image: lightninglabs/taproot-assets:v0.3.0
     container_name: main-alice-tap
     hostname: main-alice-tap
     command: >-

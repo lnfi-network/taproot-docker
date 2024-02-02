@@ -7,6 +7,6 @@ echo "Generating a block every 30 seconds. "
 while :
 do
         echo "Generate a new block `date '+%d/%m/%Y %H:%M:%S'`"
-        bitcoin-cli -regtest -rpcwallet=miningwallet -generate 1
+        bitcoin-cli -regtest -rpcwallet=miningwallet -generate 1 || echo "Failed to generate a block, continuing..."
         sleep 30
 done

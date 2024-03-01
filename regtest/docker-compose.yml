@@ -1,5 +1,9 @@
 version: '3.3'
 name: tapd-regtest-network
+volumes:
+  bitcoind:
+  alice:
+  bob:
 services:
   backend:
     stop_grace_period: 5m
@@ -9,10 +13,10 @@ services:
     command: >-
       /home/bitcoin/start.sh
     volumes:
-      - ./volumes/bitcoind/backend:/root/.bitcoin
-      - ./config/start.sh:/home/bitcoin/start.sh
-      - ./config/setup.sh:/home/bitcoin/setup.sh
-      - ./config/mining.sh:/home/bitcoin/mining.sh
+      - bitcoind:/root/.bitcoin
+      - ./config/start.sh:/home/bitcoin/start.sh # NOTE I've tried using the volume name here and it doesn't work. this does still - although I don't know why
+      - ./config/setup.sh:/home/bitcoin/setup.sh # NOTE I've tried using the volume name here and it doesn't work. this does still - although I don't know why
+      - ./config/mining.sh:/home/bitcoin/mining.sh # NOTE I've tried using the volume name here and it doesn't work. this does still - although I don't know why
     expose:
       - '18443'
       - '18444'
@@ -28,102 +32,84 @@ services:
       USERID: ${USERID:-1000}
       GROUPID: ${GROUPID:-1000}
     stop_grace_period: 2m
-    image: lightninglabs/lnd:v0.17.0-beta
+    image: lightninglabs/lnd:v0.17.3-beta
     container_name: regtest-alice-lnd
     hostname: regtest-alice-lnd
-    command: >-
-      lnd --noseedbackup --trickledelay=5000 --alias=alice --externalip=regtest-alice-lnd
-      --tlsextradomain=regtest-alice-lnd --tlsextradomain=regtest-alice-lnd
-      --listen=0.0.0.0:9735 --rpclisten=0.0.0.0:10009 --restlisten=0.0.0.0:8080
-      --bitcoin.active --bitcoin.regtest --bitcoin.node=bitcoind
-      --bitcoind.rpchost=bitcoind-backend --bitcoind.rpcuser=polaruser
-      --bitcoind.rpcpass=polarpass
-      --bitcoind.zmqpubrawblock=tcp://bitcoind-backend:28334
-      --bitcoind.zmqpubrawtx=tcp://bitcoind-backend:28335
+    command: >
+      lnd --noseedbackup --trickledelay=5000 --alias=alice --tlsextradomain=regtest-alice-lnd --tlsextraip=127.0.0.1 --listen=0.0.0.0:9735 --rpclisten=0.0.0.0:10009 --restlisten=0.0.0.0:8080 --bitcoin.active --bitcoin.regtest --bitcoin.node=bitcoind --bitcoind.rpchost=bitcoind-backend --bitcoind.rpcuser=polaruser --bitcoind.rpcpass=polarpass --bitcoind.zmqpubrawblock=tcp://bitcoind-backend:28334 --bitcoind.zmqpubrawtx=tcp://bitcoind-backend:28335
     restart: always
     volumes:
-      - ./volumes/lnd/alice:/root/.lnd
+      - alice:/root/.lnd
     expose:
       - '8080'
       - '10009'
       - '9735'
     ports:
-      - '8081:8080'
-      - '10001:10009'
+      - '8080:8080'
+      - '10009:10009'
       - '9735:9735'
-  # bob:
-  #   environment:
-  #     USERID: ${USERID:-1000}
-  #     GROUPID: ${GROUPID:-1000}
-  #   stop_grace_period: 2m
-  #   image: polarlightning/lnd:0.17.0-beta
-  #   container_name: regtest-bob-lnd
-  #   hostname: bob
-  #   command: >-
-  #     lnd --noseedbackup --trickledelay=5000 --alias=bob --externalip=bob
-  #     --tlsextradomain=bob --tlsextradomain=regtest-bob-lnd --listen=0.0.0.0:9735
-  #     --rpclisten=0.0.0.0:10009 --restlisten=0.0.0.0:8080 --bitcoin.active
-  #     --bitcoin.regtest --bitcoin.node=bitcoind
-  #     --bitcoind.rpchost=bitcoind-backend --bitcoind.rpcuser=polaruser
-  #     --bitcoind.rpcpass=polarpass
-  #     --bitcoind.zmqpubrawblock=tcp://bitcoind-backend:28334
-  #     --bitcoind.zmqpubrawtx=tcp://bitcoind-backend:28335
-  #   restart: always
-  #   volumes:
-  #     - ./volumes/lnd/bob:/root/.lnd
-  #   expose:
-  #     - '8080'
-  #     - '10009'
-  #     - '9735'
-  #   ports:
-  #     - '8082:8080'
-  #     - '10002:10009'
-  #     - '9736:9735'
+  bob:
+    environment:
+      USERID: ${USERID:-1000}
+      GROUPID: ${GROUPID:-1000}
+    stop_grace_period: 2m
+    image: lightninglabs/lnd:v0.17.3-beta
+    container_name: regtest-bob-lnd
+    hostname: regtest-bob-lnd
+    command: >
+      lnd --noseedbackup --trickledelay=5000 --alias=bob --tlsextradomain=regtest-bob-lnd --tlsextraip=127.0.0.1 --listen=0.0.0.0:9736 --rpclisten=0.0.0.0:10010 --restlisten=0.0.0.0:8081 --bitcoin.active --bitcoin.regtest --bitcoin.node=bitcoind --bitcoind.rpchost=bitcoind-backend --bitcoind.rpcuser=polaruser --bitcoind.rpcpass=polarpass --bitcoind.zmqpubrawblock=tcp://bitcoind-backend:28334 --bitcoind.zmqpubrawtx=tcp://bitcoind-backend:28335
+    restart: always
+    volumes:
+      - bob:/root/.lnd
+    expose:
+      - '8081'
+      - '10010'
+      - '9736'
+    ports:
+      - '8081:8081'
+      - '10010:10010'
+      - '9736:9736'
   alice-tap:
     environment:
       USERID: ${USERID:-1000}
       GROUPID: ${GROUPID:-1000}
     stop_grace_period: 2m
-    image: lightninglabs/taproot-assets:v0.3.0-alpha.rc2
+    image: lightninglabs/taproot-assets:v0.3.2
     container_name: regtest-alice-tap
     hostname: regtest-alice-tap
     command: >-
-      tapd --network=regtest --debuglevel=debug --tlsextradomain=regtest-alice-tap
-      --tlsextradomain=regtest-alice-tap --rpclisten=0.0.0.0:10029
-      --restlisten=0.0.0.0:8089 --lnd.host=regtest-alice-lnd:10009
-      --lnd.macaroonpath=/root/.lnd/data/chain/bitcoin/regtest/admin.macaroon
-      --lnd.tlspath=/root/.lnd/tls.cert
+      tapd --network=regtest --debuglevel=debug --tlsextradomain=regtest-alice-tap --tlsextraip=127.0.0.1 --rpclisten=0.0.0.0:10029 --restlisten=0.0.0.0:8089 --lnd.host=regtest-alice-lnd:10009 --lnd.macaroonpath=/root/.lnd/data/chain/bitcoin/regtest/admin.macaroon --lnd.tlspath=/root/.lnd/tls.cert
     restart: always
     volumes:
-      - ./volumes/lnd/alice:/root/.lnd
-      - ./volumes/tapd/regtest-alice-tap:/root/.tapd
+      - alice:/root/.lnd
+      - alice:/root/.tapd
     expose:
       - '8089'
       - '10029'
     ports:
-      - '8289:8089'
-      - '12029:10029'
-  # regtest-bob-tap:
-  #   environment:
-  #     USERID: ${USERID:-1000}
-  #     GROUPID: ${GROUPID:-1000}
-  #   stop_grace_period: 2m
-  #   image: polarlightning/tapd:0.2.3-alpha
-  #   container_name: regtest-bob-tap
-  #   hostname: regtest-bob-tap
-  #   command: >-
-  #     tapd --network=regtest --debuglevel=debug --tlsextradomain=regtest-bob-tap
-  #     --tlsextradomain=regtest-bob-tap --rpclisten=0.0.0.0:10029
-  #     --restlisten=0.0.0.0:8089 --lnd.host=regtest-bob-lnd:10009
-  #     --lnd.macaroonpath=/home/tap/.lnd/data/chain/bitcoin/regtest/admin.macaroon
-  #     --lnd.tlspath=/home/tap/.lnd/tls.cert
-  #   restart: always
-  #   volumes:
-  #     - ./volumes/lnd/bob:/home/tap/.lnd
-  #     - ./volumes/tapd/regtest-bob-tap:/home/tap/.tapd
-  #   expose:
-  #     - '8089'
-  #     - '10029'
-  #   ports:
-  #     - '8290:8089'
-  #     - '12030:10029'
+      - '8089:8089'
+      - '10029:10029'
+    links:
+      - alice
+  bob-tap:
+    environment:
+      USERID: ${USERID:-1000}
+      GROUPID: ${GROUPID:-1000}
+    stop_grace_period: 2m
+    image: lightninglabs/taproot-assets:v0.3.2
+    container_name: regtest-bob-tap
+    hostname: regtest-bob-tap
+    command: >-
+      tapd --network=regtest --debuglevel=debug --tlsextradomain=regtest-bob-tap --tlsextraip=127.0.0.1 --rpclisten=0.0.0.0:10030 --restlisten=0.0.0.0:8090 --lnd.host=regtest-bob-lnd:10010 --lnd.macaroonpath=/root/.lnd/data/chain/bitcoin/regtest/admin.macaroon --lnd.tlspath=/root/.lnd/tls.cert
+    restart: always
+    volumes:
+      - bob:/root/.lnd
+      - bob:/root/.tapd
+    expose:
+      - '8090'
+      - '10030'
+    ports:
+      - '8090:8090'
+      - '10030:10030'
+    links:
+      - bob

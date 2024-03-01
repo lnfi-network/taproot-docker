@@ -8,6 +8,8 @@ Minimal docker setup to run a regtest node with lnd and taro.
     bitcoin---
         ---->Alice-Lnd ---> Alice-Tap
         ---->Bob-Lnd ---> Bob-Tap
+
+
 ## Regtest Installation
 ``` bash
 cd regtest

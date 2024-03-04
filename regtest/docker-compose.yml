@@ -78,7 +78,7 @@ services:
     container_name: regtest-alice-tap
     hostname: regtest-alice-tap
     command: >-
-      tapd --network=regtest --debuglevel=debug --tlsextradomain=regtest-alice-tap --tlsextraip=127.0.0.1 --rpclisten=0.0.0.0:10029 --restlisten=0.0.0.0:8089 --lnd.host=regtest-alice-lnd:10009 --lnd.macaroonpath=/root/.lnd/data/chain/bitcoin/regtest/admin.macaroon --lnd.tlspath=/root/.lnd/tls.cert
+      tapd --network=regtest --debuglevel=debug --tlsextradomain=regtest-alice-tap --tlsextraip=127.0.0.1 --rpclisten=0.0.0.0:10029 --restlisten=0.0.0.0:8089 --allow-public-uni-proof-courier --allow-public-stats --universe.public-access --lnd.host=regtest-alice-lnd:10009 --lnd.macaroonpath=/root/.lnd/data/chain/bitcoin/regtest/admin.macaroon --lnd.tlspath=/root/.lnd/tls.cert
     restart: always
     volumes:
       - alice:/root/.lnd
@@ -86,9 +86,13 @@ services:
     expose:
       - '8089'
       - '10029'
+      - '50051'
+      - '50052'
     ports:
       - '8089:8089'
       - '10029:10029'
+      - '50051:50051'
+      - '50052:50052'
     links:
       - alice
   bob-tap:
@@ -100,7 +104,7 @@ services:
     container_name: regtest-bob-tap
     hostname: regtest-bob-tap
     command: >-
-      tapd --network=regtest --debuglevel=debug --tlsextradomain=regtest-bob-tap --tlsextraip=127.0.0.1 --rpclisten=0.0.0.0:10030 --restlisten=0.0.0.0:8090 --lnd.host=regtest-bob-lnd:10010 --lnd.macaroonpath=/root/.lnd/data/chain/bitcoin/regtest/admin.macaroon --lnd.tlspath=/root/.lnd/tls.cert
+      tapd --network=regtest --debuglevel=debug --tlsextradomain=regtest-bob-tap --tlsextraip=127.0.0.1 --rpclisten=0.0.0.0:10030 --restlisten=0.0.0.0:8090 --allow-public-uni-proof-courier --allow-public-stats --universe.public-access --lnd.host=regtest-bob-lnd:10010 --lnd.macaroonpath=/root/.lnd/data/chain/bitcoin/regtest/admin.macaroon --lnd.tlspath=/root/.lnd/tls.cert
     restart: always
     volumes:
       - bob:/root/.lnd

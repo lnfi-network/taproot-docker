@@ -57,6 +57,26 @@ sudo docker exec -it regtest-bob-tap tapcli --network=regtest --rpcserver=localh
 sudo docker exec -it regtest-bob-tap tapcli --network=regtest --rpcserver=localhost:10030 assets mint finalize
 echo "======== bob asset mint finalized for $asset ========="
 
+echo "generate 10 more blocks"
+sudo docker exec -it -u bitcoin bitcoind-backend bitcoin-cli -regtest -rpcwallet=miningwallet -rpcpassword=polarpass -rpcuser=polaruser -generate 10
+echo "======== finish generate init blocks ========"
+sleep 3
+
+echo "======== syncing alice to bob universe ========="
+sudo docker exec -it regtest-alice-tap tapcli --network=regtest universe federation add --universe_host=regtest-bob-tap:10030
+
+sudo docker exec -it regtest-alice-tap tapcli --network=regtest universe federation config global --proof_type issuance --allow_insert true
+sudo docker exec -it regtest-alice-tap tapcli --network=regtest universe federation config global --proof_type transfer --allow_insert true
+sudo docker exec -it regtest-alice-tap tapcli --network=regtest universe sync --universe_host=regtest-bob-tap:10030
+
+echo "======== syncing bob to alice universe ========="
+sudo docker exec -it regtest-bob-tap tapcli --rpcserver=localhost:10030 --network=regtest universe federation add --universe_host=regtest-alice-tap:10029
+sudo docker exec -it regtest-bob-tap tapcli --rpcserver=localhost:10030 --network=regtest universe federation config global --proof_type issuance --allow_insert true
+sudo docker exec -it regtest-bob-tap tapcli --rpcserver=localhost:10030 --network=regtest universe federation config global --proof_type transfer --allow_insert true
+
+sudo docker exec -it regtest-bob-tap tapcli --rpcserver=localhost:10030 --network=regtest universe sync --universe_host=regtest-alice-tap:10029
+
+
 echo "======== lnd tls cert hex ========="
 alice_cert=$(sudo docker exec -it regtest-alice-lnd cat /root/.lnd/tls.cert | xxd -p -c 1000 | tr -d '\n')
 echo "alice cert => $alice_cert"

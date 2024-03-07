@@ -32,7 +32,7 @@ services:
       USERID: ${USERID:-1000}
       GROUPID: ${GROUPID:-1000}
     stop_grace_period: 2m
-    image: lightninglabs/lnd:v0.17.3-beta
+    image: lightninglabs/lnd:v0.17.4-beta
     container_name: regtest-alice-lnd
     hostname: regtest-alice-lnd
     command: >
@@ -53,7 +53,7 @@ services:
       USERID: ${USERID:-1000}
       GROUPID: ${GROUPID:-1000}
     stop_grace_period: 2m
-    image: lightninglabs/lnd:v0.17.3-beta
+    image: lightninglabs/lnd:v0.17.4-beta
     container_name: regtest-bob-lnd
     hostname: regtest-bob-lnd
     command: >
@@ -74,7 +74,7 @@ services:
       USERID: ${USERID:-1000}
       GROUPID: ${GROUPID:-1000}
     stop_grace_period: 2m
-    image: lightninglabs/taproot-assets:v0.3.2
+    image: lightninglabs/taproot-assets:v0.3.3
     container_name: regtest-alice-tap
     hostname: regtest-alice-tap
     command: >-
@@ -100,7 +100,7 @@ services:
       USERID: ${USERID:-1000}
       GROUPID: ${GROUPID:-1000}
     stop_grace_period: 2m
-    image: lightninglabs/taproot-assets:v0.3.2
+    image: lightninglabs/taproot-assets:v0.3.3
     container_name: regtest-bob-tap
     hostname: regtest-bob-tap
     command: >-

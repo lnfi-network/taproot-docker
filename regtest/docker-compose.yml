@@ -18,11 +18,13 @@ services:
       - ./config/setup.sh:/home/bitcoin/setup.sh # NOTE I've tried using the volume name here and it doesn't work. this does still - although I don't know why
       - ./config/mining.sh:/home/bitcoin/mining.sh # NOTE I've tried using the volume name here and it doesn't work. this does still - although I don't know why
     expose:
+      - '8332'
       - '18443'
       - '18444'
       - '28334'
       - '28335'
     ports:
+      - '8332:8332'
       - '18443:18443'
       - '19444:18444'
       - '28334:28334'

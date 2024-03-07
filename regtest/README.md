@@ -14,6 +14,7 @@ cd regtest
 # run docker-compose
 sudo docker-compose up -d
 # set auto mining(30s/block), transfer gas to alice-lnd and bob-lnd
+
 ./config/setup.sh
 ```
 
@@ -39,4 +40,6 @@ https://testnet-faucet.com/btc-testnet/
 ## Thanks
 https://hub.docker.com/r/polarlightning
 
+
 https://github.com/davisv7/sashimi
+

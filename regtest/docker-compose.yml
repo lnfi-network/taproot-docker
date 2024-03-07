@@ -13,7 +13,7 @@ services:
     command: >-
       /home/bitcoin/start.sh
     volumes:
-      - bitcoind:/root/.bitcoin
+      - ./volumes/bitcoind:/root/.bitcoin
       - ./config/start.sh:/home/bitcoin/start.sh # NOTE I've tried using the volume name here and it doesn't work. this does still - although I don't know why
       - ./config/setup.sh:/home/bitcoin/setup.sh # NOTE I've tried using the volume name here and it doesn't work. this does still - although I don't know why
       - ./config/mining.sh:/home/bitcoin/mining.sh # NOTE I've tried using the volume name here and it doesn't work. this does still - although I don't know why
@@ -39,7 +39,7 @@ services:
       lnd --noseedbackup --trickledelay=5000 --alias=alice --tlsextradomain=regtest-alice-lnd --tlsextraip=127.0.0.1 --listen=0.0.0.0:9735 --rpclisten=0.0.0.0:10009 --restlisten=0.0.0.0:8080 --bitcoin.active --bitcoin.regtest --bitcoin.node=bitcoind --bitcoind.rpchost=bitcoind-backend --bitcoind.rpcuser=polaruser --bitcoind.rpcpass=polarpass --bitcoind.zmqpubrawblock=tcp://bitcoind-backend:28334 --bitcoind.zmqpubrawtx=tcp://bitcoind-backend:28335
     restart: always
     volumes:
-      - alice:/root/.lnd
+      - ./volumes/lnd/alice:/root/.lnd
     expose:
       - '8080'
       - '10009'
@@ -60,7 +60,7 @@ services:
       lnd --noseedbackup --trickledelay=5000 --alias=bob --tlsextradomain=regtest-bob-lnd --tlsextraip=127.0.0.1 --listen=0.0.0.0:9736 --rpclisten=0.0.0.0:10010 --restlisten=0.0.0.0:8081 --bitcoin.active --bitcoin.regtest --bitcoin.node=bitcoind --bitcoind.rpchost=bitcoind-backend --bitcoind.rpcuser=polaruser --bitcoind.rpcpass=polarpass --bitcoind.zmqpubrawblock=tcp://bitcoind-backend:28334 --bitcoind.zmqpubrawtx=tcp://bitcoind-backend:28335
     restart: always
     volumes:
-      - bob:/root/.lnd
+      - ./volumes/lnd/bob:/root/.lnd
     expose:
       - '8081'
       - '10010'
@@ -81,8 +81,8 @@ services:
       tapd --network=regtest --debuglevel=debug --tlsextradomain=regtest-alice-tap --tlsextraip=127.0.0.1 --rpclisten=0.0.0.0:10029 --restlisten=0.0.0.0:8089 --allow-public-uni-proof-courier --allow-public-stats --universe.public-access --lnd.host=regtest-alice-lnd:10009 --lnd.macaroonpath=/root/.lnd/data/chain/bitcoin/regtest/admin.macaroon --lnd.tlspath=/root/.lnd/tls.cert
     restart: always
     volumes:
-      - alice:/root/.lnd
-      - alice:/root/.tapd
+      - ./volumes/lnd/alice:/root/.lnd
+      - ./volumes/tapd/alice:/root/.tapd
     expose:
       - '8089'
       - '10029'
@@ -107,8 +107,8 @@ services:
       tapd --network=regtest --debuglevel=debug --tlsextradomain=regtest-bob-tap --tlsextraip=127.0.0.1 --rpclisten=0.0.0.0:10030 --restlisten=0.0.0.0:8090 --allow-public-uni-proof-courier --allow-public-stats --universe.public-access --lnd.host=regtest-bob-lnd:10010 --lnd.macaroonpath=/root/.lnd/data/chain/bitcoin/regtest/admin.macaroon --lnd.tlspath=/root/.lnd/tls.cert
     restart: always
     volumes:
-      - bob:/root/.lnd
-      - bob:/root/.tapd
+      - ./volumes/lnd/bob:/root/.lnd
+      - ./volumes/tapd/bob:/root/.tapd
     expose:
       - '8090'
       - '10030'

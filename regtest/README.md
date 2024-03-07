@@ -14,7 +14,7 @@ cd regtest
 # run docker-compose
 sudo docker-compose up -d
 # set auto mining(30s/block), transfer gas to alice-lnd and bob-lnd
-./setup.sh
+./config/setup.sh
 ```
 
 ## Regtest Installation

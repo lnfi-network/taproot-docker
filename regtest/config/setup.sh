@@ -21,7 +21,7 @@ alice=`sudo docker exec -it regtest-alice-lnd lncli --network=regtest newaddress
 alice=$(echo $alice | awk -F'"' '{print $4}')
 echo "alice address => $alice"
 
-sudo docker exec -it -u bitcoin bitcoind-backend bitcoin-cli -regtest -rpcpassword=polarpass -rpcuser=polaruser -rpcwallet=miningwallet sendtoaddress $alice 100
+sudo docker exec -it -u bitcoin bitcoind-backend bitcoin-cli -regtest -rpcpassword=polarpass -rpcuser=polaruser -rpcwallet=miningwallet sendtoaddress $alice 200
 sudo docker exec -it -u bitcoin bitcoind-backend bitcoin-cli -regtest -rpcpassword=polarpass -rpcuser=polaruser -rpcwallet=miningwallet -generate 6
 
 echo "======== finish send btc to alice ($alice) ========"
@@ -34,7 +34,7 @@ bob=`sudo docker exec -it regtest-bob-lnd lncli --network=regtest --rpcserver=lo
 bob=$(echo $bob | awk -F'"' '{print $4}')
 echo "bob address => $bob"
 
-sudo docker exec -it -u bitcoin bitcoind-backend bitcoin-cli -regtest -rpcpassword=polarpass -rpcuser=polaruser -rpcwallet=miningwallet sendtoaddress $bob 100
+sudo docker exec -it -u bitcoin bitcoind-backend bitcoin-cli -regtest -rpcpassword=polarpass -rpcuser=polaruser -rpcwallet=miningwallet sendtoaddress $bob 200
 sudo docker exec -it -u bitcoin bitcoind-backend bitcoin-cli -regtest -rpcpassword=polarpass -rpcuser=polaruser -rpcwallet=miningwallet -generate 6
 
 echo "======== finish send btc to bob ($bob) ========"
@@ -46,16 +46,14 @@ echo "======== finish generate init blocks ========"
 sleep 5
 
 echo "======== alice mints assets ========="
-asset=$($RANDOM | md5sum | head -c 20)
-sudo docker exec -it regtest-alice-tap tapcli --network=regtest assets mint --type normal --name $asset --supply 10000 --new_grouped_asset true
+sudo docker exec -it regtest-alice-tap tapcli --network=regtest assets mint --type normal --name alicecoin --supply 1000000 --new_grouped_asset
 sudo docker exec -it regtest-alice-tap tapcli --network=regtest assets mint finalize
-echo "======== alice asset mint finalized for $asset ========="
+echo "======== alice asset mint finalized ========="
 
 echo "======== bob mints assets ========="
-asset=$($RANDOM | md5sum | head -c 20)
-sudo docker exec -it regtest-bob-tap tapcli --network=regtest --rpcserver=localhost:10030 assets mint --type normal --name $asset --supply 10000 --new_grouped_asset true
+sudo docker exec -it regtest-bob-tap tapcli --network=regtest --rpcserver=localhost:10030 assets mint --type normal --name bobcoin --supply 1000000 --new_grouped_asset
 sudo docker exec -it regtest-bob-tap tapcli --network=regtest --rpcserver=localhost:10030 assets mint finalize
-echo "======== bob asset mint finalized for $asset ========="
+echo "======== bob asset mint finalized ========="
 
 echo "generate 10 more blocks"
 sudo docker exec -it -u bitcoin bitcoind-backend bitcoin-cli -regtest -rpcwallet=miningwallet -rpcpassword=polarpass -rpcuser=polaruser -generate 10

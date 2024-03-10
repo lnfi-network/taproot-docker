@@ -6,7 +6,7 @@ services:
       USERID: ${USERID:-1000}
       GROUPID: ${GROUPID:-1000}
     stop_grace_period: 2m
-    image: lightninglabs/lnd:v0.17.0-beta
+    image: lightninglabs/lnd:v0.17.4-beta
     container_name: alice-lnd
     hostname: alice
     command: >-
@@ -45,15 +45,15 @@ services:
       - '10009'
       - '9735'
     ports:
-      - '8081:8080'
-      - '10001:10009'
-      - '9735:9735'
+      - '18080:8080'
+      - '20009:10009'
+      - '19735:9735'
   alice-tap: 
     environment:
       USERID: ${USERID:-1000}
       GROUPID: ${GROUPID:-1000}
     stop_grace_period: 2m
-    image: lightninglabs/taproot-assets:v0.3.0
+    image: lightninglabs/taproot-assets:v0.3.3
     container_name: alice-tap
     hostname: alice-tap
     command: >-
@@ -84,14 +84,14 @@ services:
       - '8089'
       - '10029'
     ports:
-      - '8289:8089'
-      - '10029:10029'
+      - '18090:8089'
+      - '20029:10029'
   bob:
     environment:
       USERID: ${USERID:-1000}
       GROUPID: ${GROUPID:-1000}
     stop_grace_period: 2m
-    image: lightninglabs/lnd:v0.17.0-beta
+    image: lightninglabs/lnd:v0.17.4-beta
     container_name: bob-lnd
     hostname: bob
     command: >-
@@ -130,15 +130,15 @@ services:
       - '10009'
       - '9735'
     ports:
-      - '8082:8080'
-      - '10002:10009'
-      - '9736:9735'
+      - '28080:8080'
+      - '30009:10009'
+      - '39735:9735'
   bob-tap:
     environment:
       USERID: ${USERID:-1000}
       GROUPID: ${GROUPID:-1000}
     stop_grace_period: 2m
-    image: lightninglabs/taproot-assets:v0.3.0
+    image: lightninglabs/taproot-assets:v0.3.3
     container_name: bob-tap
     hostname: bob-tap
     command: >-
@@ -168,8 +168,8 @@ services:
       - '8089'
       - '10029'
     ports:
-      - '8290:8089'
-      - '10030:10029'
+      - '38089:8089'
+      - '30029:10029'
   postgres:
     container_name: postgres-db
     hostname: postgres-db
@@ -177,7 +177,7 @@ services:
     expose:
       - '5432'
     ports:
-      - 5439:5432
+      - 35432:5432
     volumes:
       - ./volumes/postgres:/bitnami/postgresql
       - ./postgres.init.sql:/docker-entrypoint-initdb.d/init.sql

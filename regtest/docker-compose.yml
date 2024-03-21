@@ -1,11 +1,19 @@
 version: '3.3'
 name: tapd-regtest-network
+
 volumes:
   bitcoind:
   alice:
   bob:
+
+networks:
+  bitcoin:
+    name: bitcoin
+
 services:
   backend:
+    networks:
+      - bitcoin
     stop_grace_period: 5m
     image: lightninglabs/bitcoin-core:25
     container_name: bitcoind-backend
@@ -30,6 +38,8 @@ services:
       - '28334:28334'
       - '29335:28335'
   alice:
+    networks:
+      - bitcoin
     environment:
       USERID: ${USERID:-1000}
       GROUPID: ${GROUPID:-1000}
@@ -51,6 +61,8 @@ services:
       - '10009:10009'
       - '9735:9735'
   bob:
+    networks:
+      - bitcoin
     environment:
       USERID: ${USERID:-1000}
       GROUPID: ${GROUPID:-1000}
@@ -72,6 +84,8 @@ services:
       - '10010:10010'
       - '9736:9736'
   alice-tap:
+    networks:
+      - bitcoin
     environment:
       USERID: ${USERID:-1000}
       GROUPID: ${GROUPID:-1000}
@@ -98,6 +112,8 @@ services:
     links:
       - alice
   bob-tap:
+    networks:
+      - bitcoin
     environment:
       USERID: ${USERID:-1000}
       GROUPID: ${GROUPID:-1000}

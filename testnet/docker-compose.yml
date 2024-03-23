@@ -1,6 +1,22 @@
 version: '3.3'
 name: tapd-test-network
 services:
+  # backend:
+  #   stop_grace_period: 5m
+  #   image: jamesob/bitcoind:master
+  #   container_name: testnet-bitcoind
+  #   hostname: testnet-bitcoind
+  #   volumes:
+  #     - ./volumes/bitcoind:/bitcoin/data
+  #     - ./bitcoin.conf:/bitcoin/bitcoin.conf
+  #   expose:
+  #     - '18332'
+  #     - '28332'
+  #     - '28333'
+  #   ports:
+  #     - '18332:18332'
+  #     - '28332:28332'
+  #     - '28333:28333'
   alice:
     environment:
       USERID: ${USERID:-1000}
@@ -21,17 +37,14 @@ services:
       --restlisten=0.0.0.0:8080
       --tlsautorefresh
 
-      --bitcoin.node=neutrino
       --bitcoin.active
       --bitcoin.testnet
-
-      --neutrino.addpeer=lnd.bitrefill.com
-      --neutrino.addpeer=35.196.85.107
-      --neutrino.addpeer=3.18.26.129
-      --neutrino.addpeer=109.235.70.143
-      --neutrino.addpeer=testnet1-btcd.zaphq.io
-      --neutrino.addpeer=testnet2-btcd.zaphq.io
-      --neutrino.addpeer=dev.conner.money
+      --bitcoin.node=bitcoind
+      --bitcoind.rpchost=${bitcoind_rpchost}
+      --bitcoind.rpcuser=${bitcoind_rpcuser}
+      --bitcoind.rpcpass=${bitcoind_rpcpass}
+      --bitcoind.zmqpubrawblock=${bitcoind_zmqpubrawblock}
+      --bitcoind.zmqpubrawtx=${bitcoind_zmqpubrawtx}
 
       --db.backend=postgres
       --db.postgres.dsn=postgres://postgres:postgrespwd@postgres-db:5432/alice_lnd
@@ -48,6 +61,11 @@ services:
       - '18080:8080'
       - '20009:10009'
       - '19735:9735'
+    logging:
+      driver: "json-file"
+      options:
+        max-file: "3"   # number of files or file count
+        max-size: "100m" # file size
   alice-tap: 
     environment:
       USERID: ${USERID:-1000}
@@ -67,6 +85,9 @@ services:
       --lnd.host=alice-lnd:10009
       --lnd.macaroonpath=/root/.lnd/data/chain/bitcoin/testnet/admin.macaroon
       --lnd.tlspath=/root/.lnd/tls.cert
+      --allow-public-uni-proof-courier 
+      --allow-public-stats 
+      --universe.public-access
 
       --databasebackend=postgres
       --postgres.host=postgres-db
@@ -86,6 +107,11 @@ services:
     ports:
       - '18090:8089'
       - '20029:10029'
+    logging:
+      driver: "json-file"
+      options:
+        max-file: "3"   # number of files or file count
+        max-size: "100m" # file size
   bob:
     environment:
       USERID: ${USERID:-1000}
@@ -106,17 +132,14 @@ services:
       --restlisten=0.0.0.0:8080
       --tlsautorefresh
 
-      --bitcoin.node=neutrino
       --bitcoin.active
       --bitcoin.testnet
-
-      --neutrino.addpeer=lnd.bitrefill.com
-      --neutrino.addpeer=35.196.85.107
-      --neutrino.addpeer=3.18.26.129
-      --neutrino.addpeer=109.235.70.143
-      --neutrino.addpeer=testnet1-btcd.zaphq.io
-      --neutrino.addpeer=testnet2-btcd.zaphq.io
-      --neutrino.addpeer=dev.conner.money
+      --bitcoin.node=bitcoind
+      --bitcoind.rpchost=${bitcoind_rpchost}
+      --bitcoind.rpcuser=${bitcoind_rpcuser}
+      --bitcoind.rpcpass=${bitcoind_rpcpass}
+      --bitcoind.zmqpubrawblock=${bitcoind_zmqpubrawblock}
+      --bitcoind.zmqpubrawtx=${bitcoind_zmqpubrawtx}
 
       --db.backend=postgres
       --db.postgres.dsn=postgres://postgres:postgrespwd@postgres-db:5432/bob_lnd
@@ -133,6 +156,11 @@ services:
       - '28080:8080'
       - '30009:10009'
       - '39735:9735'
+    logging:
+      driver: "json-file"
+      options:
+        max-file: "3"   # number of files or file count
+        max-size: "100m" # file size
   bob-tap:
     environment:
       USERID: ${USERID:-1000}
@@ -152,7 +180,10 @@ services:
       --lnd.host=bob-lnd:10009
       --lnd.macaroonpath=/root/.lnd/data/chain/bitcoin/testnet/admin.macaroon
       --lnd.tlspath=/root/.lnd/tls.cert
-      
+      --allow-public-uni-proof-courier 
+      --allow-public-stats 
+      --universe.public-access
+
       --databasebackend=postgres
       --postgres.host=postgres-db
       --postgres.port=5432
@@ -170,6 +201,11 @@ services:
     ports:
       - '38089:8089'
       - '30029:10029'
+    logging:
+      driver: "json-file"
+      options:
+        max-file: "3"   # number of files or file count
+        max-size: "100m" # file size
   postgres:
     container_name: postgres-db
     hostname: postgres-db
@@ -185,3 +221,8 @@ services:
       - POSTGRESQL_USERNAME=postgres
       - POSTGRESQL_PASSWORD=postgrespwd
       - POSTGRESQL_DATABASE=postgres
+    logging:
+      driver: "json-file"
+      options:
+        max-file: "3"   # number of files or file count
+        max-size: "100m" # file size

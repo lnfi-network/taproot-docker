@@ -10,3 +10,4 @@ build/
 testnet/volumes
 regtest/volumes
 mainnet/volumes
+testnet/.env

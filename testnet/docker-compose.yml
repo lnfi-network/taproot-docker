@@ -1,22 +1,6 @@
 version: '3.3'
 name: tapd-test-network
 services:
-  # backend:
-  #   stop_grace_period: 5m
-  #   image: jamesob/bitcoind:master
-  #   container_name: testnet-bitcoind
-  #   hostname: testnet-bitcoind
-  #   volumes:
-  #     - ./volumes/bitcoind:/bitcoin/data
-  #     - ./bitcoin.conf:/bitcoin/bitcoin.conf
-  #   expose:
-  #     - '18332'
-  #     - '28332'
-  #     - '28333'
-  #   ports:
-  #     - '18332:18332'
-  #     - '28332:28332'
-  #     - '28333:28333'
   alice:
     environment:
       USERID: ${USERID:-1000}
@@ -30,7 +14,6 @@ services:
       --trickledelay=5000 
       --alias=alice 
       --externalip=alice
-      --tlsextradomain=alice 
       --tlsextradomain=alice-lnd
       --listen=0.0.0.0:9735 
       --rpclisten=0.0.0.0:10009 
@@ -79,15 +62,13 @@ services:
       --network=testnet 
       --debuglevel=debug 
       --tlsextradomain=alice-tap
-      --tlsextradomain=alice-tap 
       --rpclisten=0.0.0.0:10029
-      --restlisten=0.0.0.0:8089 
+      --restlisten=0.0.0.0:8089
       --lnd.host=alice-lnd:10009
       --lnd.macaroonpath=/root/.lnd/data/chain/bitcoin/testnet/admin.macaroon
       --lnd.tlspath=/root/.lnd/tls.cert
       --allow-public-uni-proof-courier 
       --allow-public-stats 
-      --universe.public-access
 
       --databasebackend=postgres
       --postgres.host=postgres-db
@@ -125,7 +106,6 @@ services:
       --trickledelay=5000 
       --alias=bob 
       --externalip=bob
-      --tlsextradomain=bob 
       --tlsextradomain=bob-lnd
       --listen=0.0.0.0:9735 
       --rpclisten=0.0.0.0:10009 
@@ -173,7 +153,6 @@ services:
       tapd 
       --network=testnet 
       --debuglevel=debug 
-      --tlsextradomain=bob-tap
       --tlsextradomain=bob-tap 
       --rpclisten=0.0.0.0:10029
       --restlisten=0.0.0.0:8089 
@@ -182,7 +161,6 @@ services:
       --lnd.tlspath=/root/.lnd/tls.cert
       --allow-public-uni-proof-courier 
       --allow-public-stats 
-      --universe.public-access
 
       --databasebackend=postgres
       --postgres.host=postgres-db
@@ -210,6 +188,7 @@ services:
     container_name: postgres-db
     hostname: postgres-db
     image: docker.io/bitnami/postgresql:14
+    restart: always
     expose:
       - '5432'
     ports:

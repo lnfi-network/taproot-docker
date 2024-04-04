@@ -47,8 +47,21 @@ services:
     image: lightninglabs/lnd:v0.17.4-beta
     container_name: regtest-alice-lnd
     hostname: regtest-alice-lnd
-    command: >
-      lnd --noseedbackup --trickledelay=5000 --alias=alice --tlsextradomain=regtest-alice-lnd --tlsextraip=127.0.0.1 --listen=0.0.0.0:9735 --rpclisten=0.0.0.0:10009 --restlisten=0.0.0.0:8080 --bitcoin.active --bitcoin.regtest --bitcoin.node=bitcoind --bitcoind.rpchost=bitcoind-backend --bitcoind.rpcuser=polaruser --bitcoind.rpcpass=polarpass --bitcoind.zmqpubrawblock=tcp://bitcoind-backend:28334 --bitcoind.zmqpubrawtx=tcp://bitcoind-backend:28335
+    command: >-
+      lnd 
+      --noseedbackup 
+      --trickledelay=5000 
+      --alias=alice
+      --tlsextradomain=regtest-alice-lnd 
+      --tlsextraip=127.0.0.1
+      --listen=0.0.0.0:9735 
+      --rpclisten=0.0.0.0:10009 
+      --restlisten=0.0.0.0:8080 
+      --bitcoin.active 
+      --bitcoin.regtest 
+      --bitcoin.node=bitcoind 
+      --bitcoind.rpchost=bitcoind-backend 
+      --bitcoind.rpcuser=polaruser --bitcoind.rpcpass=polarpass --bitcoind.zmqpubrawblock=tcp://bitcoind-backend:28334 --bitcoind.zmqpubrawtx=tcp://bitcoind-backend:28335
     restart: always
     volumes:
       - ./volumes/lnd/alice:/root/.lnd
@@ -70,8 +83,24 @@ services:
     image: lightninglabs/lnd:v0.17.4-beta
     container_name: regtest-bob-lnd
     hostname: regtest-bob-lnd
-    command: >
-      lnd --noseedbackup --trickledelay=5000 --alias=bob --tlsextradomain=regtest-bob-lnd --tlsextraip=127.0.0.1 --listen=0.0.0.0:9736 --rpclisten=0.0.0.0:10010 --restlisten=0.0.0.0:8081 --bitcoin.active --bitcoin.regtest --bitcoin.node=bitcoind --bitcoind.rpchost=bitcoind-backend --bitcoind.rpcuser=polaruser --bitcoind.rpcpass=polarpass --bitcoind.zmqpubrawblock=tcp://bitcoind-backend:28334 --bitcoind.zmqpubrawtx=tcp://bitcoind-backend:28335
+    command: >-
+      lnd 
+        --noseedbackup 
+        --trickledelay=5000 
+        --alias=bob 
+        --tlsextradomain=regtest-bob-lnd 
+        --tlsextraip=127.0.0.1 
+        --listen=0.0.0.0:9736 
+        --rpclisten=0.0.0.0:10010 
+        --restlisten=0.0.0.0:8081 
+        --bitcoin.active 
+        --bitcoin.regtest 
+        --bitcoin.node=bitcoind 
+        --bitcoind.rpchost=bitcoind-backend 
+        --bitcoind.rpcuser=polaruser 
+        --bitcoind.rpcpass=polarpass 
+        --bitcoind.zmqpubrawblock=tcp://bitcoind-backend:28334 
+        --bitcoind.zmqpubrawtx=tcp://bitcoind-backend:28335
     restart: always
     volumes:
       - ./volumes/lnd/bob:/root/.lnd
@@ -94,7 +123,19 @@ services:
     container_name: regtest-alice-tap
     hostname: regtest-alice-tap
     command: >-
-      tapd --network=regtest --debuglevel=debug --tlsextradomain=regtest-alice-tap --tlsextraip=127.0.0.1 --rpclisten=0.0.0.0:10029 --restlisten=0.0.0.0:8089 --allow-public-uni-proof-courier --allow-public-stats --universe.public-access --lnd.host=regtest-alice-lnd:10009 --lnd.macaroonpath=/root/.lnd/data/chain/bitcoin/regtest/admin.macaroon --lnd.tlspath=/root/.lnd/tls.cert
+      tapd --network=regtest 
+        --debuglevel=debug 
+        --tlsextradomain=regtest-alice-tap 
+        --tlsextraip=127.0.0.1 
+        --tlsextraip=docker.for.mac.host.internal 
+        --rpclisten=0.0.0.0:10029 
+        --restlisten=0.0.0.0:8089 
+        --allow-public-uni-proof-courier 
+        --allow-public-stats 
+        --universe.public-access 
+        --lnd.host=regtest-alice-lnd:10009 
+        --lnd.macaroonpath=/root/.lnd/data/chain/bitcoin/regtest/admin.macaroon 
+        --lnd.tlspath=/root/.lnd/tls.cert
     restart: always
     volumes:
       - ./volumes/lnd/alice:/root/.lnd
@@ -122,7 +163,19 @@ services:
     container_name: regtest-bob-tap
     hostname: regtest-bob-tap
     command: >-
-      tapd --network=regtest --debuglevel=debug --tlsextradomain=regtest-bob-tap --tlsextraip=127.0.0.1 --rpclisten=0.0.0.0:10030 --restlisten=0.0.0.0:8090 --allow-public-uni-proof-courier --allow-public-stats --universe.public-access --lnd.host=regtest-bob-lnd:10010 --lnd.macaroonpath=/root/.lnd/data/chain/bitcoin/regtest/admin.macaroon --lnd.tlspath=/root/.lnd/tls.cert
+      tapd 
+        --network=regtest 
+        --debuglevel=debug 
+        --tlsextradomain=regtest-bob-tap 
+        --tlsextraip=127.0.0.1 
+        --rpclisten=0.0.0.0:10030 
+        --restlisten=0.0.0.0:8090
+        --allow-public-uni-proof-courier 
+        --allow-public-stats 
+        --universe.public-access 
+        --lnd.host=regtest-bob-lnd:10010 
+        --lnd.macaroonpath=/root/.lnd/data/chain/bitcoin/regtest/admin.macaroon 
+        --lnd.tlspath=/root/.lnd/tls.cert
     restart: always
     volumes:
       - ./volumes/lnd/bob:/root/.lnd

@@ -19,10 +19,29 @@ services:
     container_name: bitcoind-backend
     hostname: backend
     command: >-
-      /home/bitcoin/start.sh
+      bitcoind 
+      --server=1 
+      --regtest=1 
+      --debug=1 
+      --zmqpubrawblock=tcp://0.0.0.0:28334
+      --zmqpubrawtx=tcp://0.0.0.0:28335 
+      --zmqpubhashblock=tcp://0.0.0.0:28336
+      --txindex=1 
+      --dnsseed=0 
+      --upnp=0 
+      --rpcbind=0.0.0.0 
+      --rpcallowip=0.0.0.0/0
+      --rpcuser=polaruser
+      --rpcpassword=polarpass 
+      --rpcport=18443 
+      --rest 
+      --listen=1 
+      --listenonion=0 
+      --fallbackfee=0.0002
+      --blockfilterindex=1 
+      --peerblockfilters=1
     volumes:
-      - ./volumes/bitcoind:/root/.bitcoin
-      - ./config/start.sh:/home/bitcoin/start.sh # NOTE I've tried using the volume name here and it doesn't work. this does still - although I don't know why
+      - ./volumes/bitcoind:/home/bitcoin/.bitcoin
       - ./config/setup.sh:/home/bitcoin/setup.sh # NOTE I've tried using the volume name here and it doesn't work. this does still - although I don't know why
       - ./config/mining.sh:/home/bitcoin/mining.sh # NOTE I've tried using the volume name here and it doesn't work. this does still - although I don't know why
     expose:
@@ -50,6 +69,7 @@ services:
     command: >-
       lnd 
       --noseedbackup 
+      --rpcmiddleware.enable
       --trickledelay=5000 
       --alias=alice
       --tlsextradomain=regtest-alice-lnd 
@@ -61,7 +81,10 @@ services:
       --bitcoin.regtest 
       --bitcoin.node=bitcoind 
       --bitcoind.rpchost=bitcoind-backend 
-      --bitcoind.rpcuser=polaruser --bitcoind.rpcpass=polarpass --bitcoind.zmqpubrawblock=tcp://bitcoind-backend:28334 --bitcoind.zmqpubrawtx=tcp://bitcoind-backend:28335
+      --bitcoind.rpcuser=polaruser 
+      --bitcoind.rpcpass=polarpass 
+      --bitcoind.zmqpubrawblock=tcp://bitcoind-backend:28334 
+      --bitcoind.zmqpubrawtx=tcp://bitcoind-backend:28335
     restart: always
     volumes:
       - ./volumes/lnd/alice:/root/.lnd

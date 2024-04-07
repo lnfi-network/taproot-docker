@@ -13,13 +13,15 @@ Minimal docker setup to run a regtest node with lnd and taro.
 cd regtest
 # run docker-compose
 sudo docker-compose up -d
-# set auto mining(30s/block), transfer gas to alice-lnd and bob-lnd
+# For the first time,run setup.sh to generate init block and send btc to alice and bobto alice-lnd and bob-lnd
 ./setup.sh
+# For the others: start auto mining (1 block/60s)
+sudo sudo docker exec -d -u bitcoin bitcoind-backend bash -c "/home/bitcoin/mining.sh"
 ```
 
 ## Regtest Installation
 ``` bash
-cd testnet
+cd regtest
 # run docker-compose
 sudo docker-compose up -d
 # TIP : need send test btc to alice-lnd and bob-lnd as gas fee
@@ -32,11 +34,3 @@ Alice-Tap :
 Bob-Tap : 
     REST API PORT:8290
     RPC API PORT:12030
-
-## Get testnet btc faucet
-https://testnet-faucet.com/btc-testnet/
-
-## Thanks
-https://hub.docker.com/r/polarlightning
-
-https://github.com/davisv7/sashimi

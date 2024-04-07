@@ -5,10 +5,10 @@ bitcoin-cli -regtest -rpcwallet=miningwallet -rpcpassword=polarpass -rpcuser=pol
 
 echo "======== finish generate init blocks ========"
 
-echo "Generating a block every 30 seconds. "
+echo "Generating a block every 60 seconds. "
 
 while true; do
         echo "Generate a new block `date '+%d/%m/%Y %H:%M:%S'`"
         bitcoin-cli -regtest -rpcwallet=miningwallet -rpcpassword=polarpass -rpcuser=polaruser -generate 1 || echo "error generate block"
-        sleep 30
+        sleep 60
 done

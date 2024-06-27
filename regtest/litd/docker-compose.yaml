@@ -58,13 +58,14 @@ services:
         --loop-mode=disable
         --pool-mode=disable
         --lnd.noseedbackup
-        --lnd.lnddir=/root/.litd/lnd
-        --lnd.alias=user
-        --lnd.tlsextradomain=user-litd
+        --lnd.alias=lnfi
+        --lnd.tlsextradomain=lnfi-litd
         --lnd.tlsextraip=127.0.0.1:9735
         --lnd.listen=0.0.0.0:9735
         --lnd.rpclisten=0.0.0.0:10009
         --lnd.restlisten=0.0.0.0:8080
+        --lnd.tlskeypath=/root/.lnd/tls.key
+        --lnd.tlscertpath=/root/.lnd/tls.cert
         --lnd.bitcoin.active
         --lnd.bitcoin.node=bitcoind
         --lnd.bitcoind.rpchost=bitcoind-backend
@@ -78,9 +79,14 @@ services:
         --taproot-assets.universe.public-access=true
         --taproot-assets.allow-public-uni-proof-courier
         --taproot-assets.allow-public-stats
+        --taproot-assets.tlscertpath=/root/.tapd/tls.cert
+        --taproot-assets.tlskeypath=/root/.tapd/tls.key
+        --taproot-assets.macaroonpath=/root/.tapd/data/chain/bitcoin/regtest/admin.macaroon
     restart: always
     volumes:
-      - ../volumes/lnfi:/root/.litd
+      - ../volumes/lit/lnfi:/root/.lit
+      - ../volumes/lnd/lnfi:/root/.lnd
+      - ../volumes/tapd/lnfi:/root/.tapd
     expose:
       - '10009'
       - '8080'
@@ -114,7 +120,6 @@ services:
         --loop-mode=disable
         --pool-mode=disable
         --lnd.noseedbackup
-        --lnd.lnddir=/root/.litd/lnd
         --lnd.alias=user
         --lnd.tlsextradomain=user-litd
         --lnd.tlsextraip=127.0.0.1:9736
@@ -126,6 +131,8 @@ services:
         --lnd.bitcoind.rpchost=bitcoind-backend
         --lnd.bitcoind.rpcuser=polaruser
         --lnd.bitcoind.rpcpass=polarpass
+        --lnd.tlscertpath=/root/.lnd/tls.cert
+        --lnd.tlskeypath=/root/.lnd/tls.key
         --lnd.bitcoind.zmqpubrawblock=tcp://bitcoind-backend:28334
         --lnd.bitcoind.zmqpubrawtx=tcp://bitcoind-backend:28335
         --taproot-assets.debuglevel=debug
@@ -134,10 +141,14 @@ services:
         --taproot-assets.universe.public-access=true
         --taproot-assets.allow-public-uni-proof-courier
         --taproot-assets.allow-public-stats
-        
+        --taproot-assets.tlscertpath=/root/.tapd/tls.cert
+        --taproot-assets.tlskeypath=/root/.tapd/tls.key
+        --taproot-assets.macaroonpath=/root/tapd/data/chain/bitcoin/regtest/admin.macaroon
     restart: always
     volumes:
-      - ../volumes/user:/root/.litd
+      - ../volumes/lit/user:/root/.lit
+      - ../volumes/lit/user:/root/.lnd
+      - ../volumes/lit/user:/root/.tapd
     expose:
       - '10010'
       - '8081'

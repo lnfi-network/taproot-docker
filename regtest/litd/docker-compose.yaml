@@ -1,0 +1,150 @@
+version: '3.3'
+name: regtest-litd-service-on-network
+
+volumes:
+  bitcoind:
+  lnfi:
+  user:
+
+networks:
+  bitcoin:
+    name: bitcoin
+
+services:
+  backend:
+    networks:
+      - bitcoin
+    stop_grace_period: 5m
+    image: lightninglabs/bitcoin-core:25
+    container_name: bitcoind-backend
+    hostname: backend
+    command: >-
+      /home/bitcoin/start.sh
+    volumes:
+      - ../volumes/bitcoind:/root/.bitcoin
+      - ../config/start.sh:/home/bitcoin/start.sh # NOTE I've tried using the volume name here and it doesn't work. this does still - although I don't know why
+      - ../config/setup.sh:/home/bitcoin/setup.sh # NOTE I've tried using the volume name here and it doesn't work. this does still - although I don't know why
+      - ../config/mining.sh:/home/bitcoin/mining.sh # NOTE I've tried using the volume name here and it doesn't work. this does still - although I don't know why
+    expose:
+      - '8332'
+      - '18443'
+      - '18444'
+      - '28334'
+      - '28335'
+    ports:
+      - '8332:8332'
+      - '18443:18443'
+      - '19444:18444'
+      - '28334:28334'
+      - '29335:28335'
+  lnfi:
+    networks:
+      - bitcoin
+    environment:
+      USERID: ${USERID:-1000}
+      GROUPID: ${GROUPID:-1000}
+    stop_grace_period: 2m
+    image: lightninglabs/lightning-terminal:v0.14.0-alpha.rc1
+    container_name: lnfi-litd
+    hostname: lnfi-litd
+    command: >-
+      litd
+        --autopilot.disable
+        --uipassword=howdoidisablethis
+        --network=regtest
+        --lnd-mode=integrated
+        --taproot-assets-mode=integrated
+        --faraday-mode=disable 
+        --loop-mode=disable
+        --pool-mode=disable
+        --lnd.lnddir=/root/.litd/lnd
+        --lnd.alias=user
+        --lnd.tlsextradomain=user-litd
+        --lnd.tlsextraip=127.0.0.1:9735
+        --lnd.listen=0.0.0.0:9735
+        --lnd.rpclisten=0.0.0.0:10009
+        --lnd.restlisten=0.0.0.0:8080
+        --lnd.bitcoin.active
+        --lnd.bitcoin.node=bitcoind
+        --lnd.bitcoind.rpchost=bitcoind-backend
+        --lnd.bitcoind.rpcuser=polaruser
+        --lnd.bitcoind.rpcpass=polarpass
+        --lnd.bitcoind.zmqpubrawblock=tcp://bitcoind-backend:28334
+        --lnd.bitcoind.zmqpubrawtx=tcp://bitcoind-backend:28335
+        --taproot-assets.debuglevel=debug
+        --taproot-assets.rpclisten=0.0.0.0:10029
+        --taproot-assets.restlisten=0.0.0.0:8089
+        --taproot-assets.universe.public-access=true
+        --taproot-assets.allow-public-uni-proof-courier
+        --taproot-assets.allow-public-stats
+    restart: always
+    volumes:
+      - ../volumes/lnfi:/root/.litd
+    expose:
+      - '10009'
+      - '8080'
+      - '9735'
+      - '10029'
+      - '8089'
+    ports:
+      - '10009:10009'
+      - '8080:8080'
+      - '9735:9735'
+      - '10029:10029'
+      - '8089:8089'
+  user:
+    networks:
+      - bitcoin
+    environment:
+      USERID: ${USERID:-1000}
+      GROUPID: ${GROUPID:-1000}
+    stop_grace_period: 2m
+    image: lightninglabs/lightning-terminal:v0.14.0-alpha.rc1
+    container_name: user-litd
+    hostname: user-litd
+    command: >-
+      litd
+        --autopilot.disable
+        --uipassword=howdoidisablethis
+        --network=regtest
+        --lnd-mode=integrated
+        --taproot-assets-mode=integrated
+        --faraday-mode=disable 
+        --loop-mode=disable
+        --pool-mode=disable
+        --lnd.lnddir=/root/.litd/lnd
+        --lnd.alias=user
+        --lnd.tlsextradomain=user-litd
+        --lnd.tlsextraip=127.0.0.1:9736
+        --lnd.listen=0.0.0.0:9736
+        --lnd.rpclisten=0.0.0.0:10010
+        --lnd.restlisten=0.0.0.0:8081
+        --lnd.bitcoin.active
+        --lnd.bitcoin.node=bitcoind
+        --lnd.bitcoind.rpchost=bitcoind-backend
+        --lnd.bitcoind.rpcuser=polaruser
+        --lnd.bitcoind.rpcpass=polarpass
+        --lnd.bitcoind.zmqpubrawblock=tcp://bitcoind-backend:28334
+        --lnd.bitcoind.zmqpubrawtx=tcp://bitcoind-backend:28335
+        --taproot-assets.debuglevel=debug
+        --taproot-assets.rpclisten=0.0.0.0:10030
+        --taproot-assets.restlisten=0.0.0.0:8090
+        --taproot-assets.universe.public-access=true
+        --taproot-assets.allow-public-uni-proof-courier
+        --taproot-assets.allow-public-stats
+        
+    restart: always
+    volumes:
+      - ../volumes/user:/root/.litd
+    expose:
+      - '10010'
+      - '8081'
+      - '9736'
+      - '10030'
+      - '8090'
+    ports:
+      - '10010:10010'
+      - '8081:8081'
+      - '9736:9736'
+      - '10030:10030'
+      - '8090:8090'

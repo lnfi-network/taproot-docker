@@ -23,11 +23,11 @@ services:
       --bitcoin.active
       --bitcoin.testnet
       --bitcoin.node=bitcoind
-      --bitcoind.rpchost=${bitcoind_rpchost}
-      --bitcoind.rpcuser=${bitcoind_rpcuser}
-      --bitcoind.rpcpass=${bitcoind_rpcpass}
-      --bitcoind.zmqpubrawblock=${bitcoind_zmqpubrawblock}
-      --bitcoind.zmqpubrawtx=${bitcoind_zmqpubrawtx}
+      --bitcoind.rpchost=165.22.58.11:18332
+      --bitcoind.rpcuser=tahub-dev-testnet
+      --bitcoind.rpcpass=akPOpwZ7F2
+      --bitcoind.zmqpubrawblock=tcp://165.22.58.11:28332
+      --bitcoind.zmqpubrawtx=tcp://165.22.58.11:28333
 
       --db.backend=postgres
       --db.postgres.dsn=postgres://postgres:postgrespwd@postgres-db:5432/alice_lnd
@@ -115,11 +115,11 @@ services:
       --bitcoin.active
       --bitcoin.testnet
       --bitcoin.node=bitcoind
-      --bitcoind.rpchost=${bitcoind_rpchost}
-      --bitcoind.rpcuser=${bitcoind_rpcuser}
-      --bitcoind.rpcpass=${bitcoind_rpcpass}
-      --bitcoind.zmqpubrawblock=${bitcoind_zmqpubrawblock}
-      --bitcoind.zmqpubrawtx=${bitcoind_zmqpubrawtx}
+      --bitcoind.rpchost=165.22.58.11:18332
+      --bitcoind.rpcuser=tahub-dev-testnet
+      --bitcoind.rpcpass=akPOpwZ7F2
+      --bitcoind.zmqpubrawblock=tcp://165.22.58.11:28332
+      --bitcoind.zmqpubrawtx=tcp://165.22.58.11:28333
 
       --db.backend=postgres
       --db.postgres.dsn=postgres://postgres:postgrespwd@postgres-db:5432/bob_lnd

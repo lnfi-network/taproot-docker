@@ -57,6 +57,7 @@ services:
         --faraday-mode=disable 
         --loop-mode=disable
         --pool-mode=disable
+        --lnd.noseedbackup
         --lnd.lnddir=/root/.litd/lnd
         --lnd.alias=user
         --lnd.tlsextradomain=user-litd
@@ -112,6 +113,7 @@ services:
         --faraday-mode=disable 
         --loop-mode=disable
         --pool-mode=disable
+        --lnd.noseedbackup
         --lnd.lnddir=/root/.litd/lnd
         --lnd.alias=user
         --lnd.tlsextradomain=user-litd

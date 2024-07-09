@@ -44,11 +44,14 @@ services:
       USERID: ${USERID:-1000}
       GROUPID: ${GROUPID:-1000}
     stop_grace_period: 2m
-    image: lightninglabs/lightning-terminal:v0.14.0-alpha.rc1
+    image: lightninglabs/lightning-terminal:v0.13.2-alpha.rc2
     container_name: lnfi-litd
     hostname: lnfi-litd
     command: >-
       litd
+        --httpslisten=0.0.0.0:8443
+        --lit-dir=/root/.lit
+        --macaroonpath=/root/.lit/lit.macaroon
         --autopilot.disable
         --uipassword=howdoidisablethis
         --network=regtest
@@ -59,13 +62,14 @@ services:
         --pool-mode=disable
         --lnd.noseedbackup
         --lnd.alias=lnfi
+        --lnd.lnddir=/root/.lnd
         --lnd.tlsextradomain=lnfi-litd
+        --lnd.tlsextraip=docker.for.mac.host.internal
+        --lnd.tlsextraip=127.0.0.1
         --lnd.tlsextraip=127.0.0.1:9735
         --lnd.listen=0.0.0.0:9735
         --lnd.rpclisten=0.0.0.0:10009
         --lnd.restlisten=0.0.0.0:8080
-        --lnd.tlskeypath=/root/.lnd/tls.key
-        --lnd.tlscertpath=/root/.lnd/tls.cert
         --lnd.bitcoin.active
         --lnd.bitcoin.node=bitcoind
         --lnd.bitcoind.rpchost=bitcoind-backend
@@ -76,29 +80,42 @@ services:
         --taproot-assets.debuglevel=debug
         --taproot-assets.rpclisten=0.0.0.0:10029
         --taproot-assets.restlisten=0.0.0.0:8089
-        --taproot-assets.universe.public-access=true
+        --taproot-assets.tlsextraip=127.0.0.1:10029
+        --taproot-assets.tlsextraip=127.0.0.1:8444
+        --taproot-assets.tlsextraip=127.0.0.1
+        --taproot-assets.tlsextradomain=user-litd
+        --taproot-assets.tlsextraip=127.0.0.1:8443
+        --taproot-assets.tlsextraip=docker.for.mac.host.internal:8443
+        --taproot-assets.tlsextradomain=lnfi-litd
+        --taproot-assets.tlsextradomain=127.0.0.1:10029
+        --taproot-assets.tlsextradomain=127.0.0.1:8443
+        --taproot-assets.tlsextradomain=docker.for.mac.host.internal:8443
+        --taproot-assets.universe.public-access=rw
         --taproot-assets.allow-public-uni-proof-courier
         --taproot-assets.allow-public-stats
-        --taproot-assets.tlscertpath=/root/.tapd/tls.cert
-        --taproot-assets.tlskeypath=/root/.tapd/tls.key
-        --taproot-assets.macaroonpath=/root/.tapd/data/chain/bitcoin/regtest/admin.macaroon
+        --taproot-assets.tapddir=/root/.lit/tapd
+        --taproot-assets.tlskeypath=/root/.lit/tls.key
+        --taproot-assets.tlscertpath=/root/.lit/tls.cert
+
     restart: always
     volumes:
-      - ../volumes/lit/lnfi:/root/.lit
-      - ../volumes/lnd/lnfi:/root/.lnd
-      - ../volumes/tapd/lnfi:/root/.tapd
+      - ../volumes/lnfi/lit:/root/.lit
+      - ../volumes/lnfi/lnd:/root/.lnd
+
     expose:
       - '10009'
       - '8080'
       - '9735'
       - '10029'
       - '8089'
+      - '8443'
     ports:
       - '10009:10009'
       - '8080:8080'
       - '9735:9735'
       - '10029:10029'
       - '8089:8089'
+      - '8443:8443'
   user:
     networks:
       - bitcoin
@@ -106,12 +123,15 @@ services:
       USERID: ${USERID:-1000}
       GROUPID: ${GROUPID:-1000}
     stop_grace_period: 2m
-    image: lightninglabs/lightning-terminal:v0.14.0-alpha.rc1
+    image: lightninglabs/lightning-terminal:v0.13.2-alpha.rc2
     container_name: user-litd
     hostname: user-litd
     command: >-
       litd
+        --httpslisten=0.0.0.0:8444
         --autopilot.disable
+        --lit-dir=/root/.lit
+        --macaroonpath=/root/.lit/lit.macaroon
         --uipassword=howdoidisablethis
         --network=regtest
         --lnd-mode=integrated
@@ -121,7 +141,10 @@ services:
         --pool-mode=disable
         --lnd.noseedbackup
         --lnd.alias=user
+        --lnd.lnddir=/root/.lnd
         --lnd.tlsextradomain=user-litd
+        --lnd.tlsextraip=127.0.0.1
+        --lnd.tlsextraip=docker.for.mac.host.internal
         --lnd.tlsextraip=127.0.0.1:9736
         --lnd.listen=0.0.0.0:9736
         --lnd.rpclisten=0.0.0.0:10010
@@ -131,33 +154,42 @@ services:
         --lnd.bitcoind.rpchost=bitcoind-backend
         --lnd.bitcoind.rpcuser=polaruser
         --lnd.bitcoind.rpcpass=polarpass
-        --lnd.tlscertpath=/root/.lnd/tls.cert
-        --lnd.tlskeypath=/root/.lnd/tls.key
         --lnd.bitcoind.zmqpubrawblock=tcp://bitcoind-backend:28334
         --lnd.bitcoind.zmqpubrawtx=tcp://bitcoind-backend:28335
         --taproot-assets.debuglevel=debug
         --taproot-assets.rpclisten=0.0.0.0:10030
         --taproot-assets.restlisten=0.0.0.0:8090
-        --taproot-assets.universe.public-access=true
+        --taproot-assets.tlsextraip=127.0.0.1:10030
+        --taproot-assets.tlsextraip=127.0.0.1:8444
+        --taproot-assets.tlsextraip=127.0.0.1:8443
+        --taproot-assets.tlsextradomain=user-litd
+        --taproot-assets.tlsextraip=docker.for.mac.host.internal:8443
+        --taproot-assets.tlsextradomain=lnfi-litd
+        --taproot-assets.tlsextradomain=127.0.0.1:10030
+        --taproot-assets.tlsextradomain=127.0.0.1:8444
+        --taproot-assets.universe.public-access=rw
         --taproot-assets.allow-public-uni-proof-courier
         --taproot-assets.allow-public-stats
-        --taproot-assets.tlscertpath=/root/.tapd/tls.cert
-        --taproot-assets.tlskeypath=/root/.tapd/tls.key
-        --taproot-assets.macaroonpath=/root/tapd/data/chain/bitcoin/regtest/admin.macaroon
+        --taproot-assets.tapddir=/root/.lit/tapd
+        --taproot-assets.tlskeypath=/root/.lit/tls.key
+        --taproot-assets.tlscertpath=/root/.lit/tls.cert
+
+        
     restart: always
     volumes:
-      - ../volumes/lit/user:/root/.lit
-      - ../volumes/lit/user:/root/.lnd
-      - ../volumes/lit/user:/root/.tapd
+      - ../volumes/user/lit:/root/.lit
+      - ../volumes/user/lnd:/root/.lnd
     expose:
       - '10010'
       - '8081'
       - '9736'
       - '10030'
       - '8090'
+      - '8444'
     ports:
       - '10010:10010'
       - '8081:8081'
       - '9736:9736'
       - '10030:10030'
       - '8090:8090'
+      - '8444:8444'

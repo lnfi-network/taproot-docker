@@ -10,4 +10,6 @@ user-tapd-tlscert=
 user-lnd-macaroon=
 user-lnd-tlscert=
 
-asset-id=6637690c5200b73f75ddab5efa5b0a64c3e426e4cc7a669da46e6ede447e233d
+asset-id=95c2c09ef35cdc5bcf5d53338b1f97eca997dfa1214db22029da42447126fe15
+
+peer-pubkey=03864e9cf12c8d0bdaa85784f3ba5c198a0bd99bda74a6400f5a44ada40b788cb4

@@ -62,9 +62,9 @@ else
 
   sudo docker exec -it user-litd tapcli --rpcserver=localhost:8444 --network=regtest --tlscertpath=/root/.lit/tls.cert --macaroonpath=/root/.lit/tapd/data/regtest/admin.macaroon universe sync --universe_host=lnfi-litd:8443
   
-  echo "======== add user node as peer of service ========"
-  sudo docker exec -it lnfi-litd lncli --rpcserver=localhost:10009 --network=regtest connect 02ab65c8c7ab5a8f1248b4829809f392f537ab3f316844078949564a2f4d67208e@user-litd:9736
-  
+  # echo "======== add user node as peer of service ========"
+  # sudo docker exec -it lnfi-litd lncli --rpcserver=localhost:10009 --network=regtest connect 02ab65c8c7ab5a8f1248b4829809f392f537ab3f316844078949564a2f4d67208e@user-litd:9736
+
 #   echo "======== sending lnfi to user ========="
 #   sudo docker exec -it user-litd tapcli --rpcserver=localhost:8444 --network=regtest --tapddir=/root/.litd/tapd addrs new --asset_id
 fi

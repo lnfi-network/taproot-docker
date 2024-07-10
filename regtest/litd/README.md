@@ -9,21 +9,22 @@
 # Get the Asset ID for the Demo
 `sudo docker exec -it lnfi-litd tapcli --rpcserver=localhost:8443 --network=regtest --tlscertpath=/root/.lit/tls.cert --macaroonpath=/root/.lit/tapd/data/regtest/admin.macaroon assets list`
 
+0c60189af34d69ac0437811ecf6f5b86aef8b20285b641b0908419132b68a477
+
 # Send some LNFI token to User LITD
 
 (1) Generate an address
 Note: this commands is run from a Docker Desktop Terminal
 
 ```
-tapcli --rpcserver=localhost:8444 --network=regtest --tlscertpath=/root/.lit/tls.cert --macaroonpath=/root/.lit/tapd/data/regtest/admin.macaroon addrs new --asset_id=6637690c5200b73f75dda
-b5efa5b0a64c3e426e4cc7a669da46e6ede447e233d --amt=15000
+tapcli --rpcserver=localhost:8444 --network=regtest --tlscertpath=/root/.lit/tls.cert --macaroonpath=/root/.lit/tapd/data/regtest/admin.macaroon addrs new --asset_id=0c60189af34d69ac0437811ecf6f5b86aef8b20285b641b0908419132b68a477 --amt=15000
 ```
 
 (2) Send to the Address
 Note: this command is run from a MacOS terminal
 
 ```
-sudo docker exec -it lnfi-litd tapcli --rpcserver=localhost:8443 --network=regtest --tlscertpath=/root/.lit/tls.cert --macaroonpath=/root/.lit/tapd/data/regtest/admin.macaroon assets send --addr taprt1qqqszqspqqzzqe3hdyx9yq9h8a6am267lfds5exrusnwfnr6v6w6gmnwmez8ugeaq5ss9jqpjfahywg528mz5ramamaw8as32kxvsycke4624spxtwjngqm4qcss9thglzl5qmuzultdvhw70gh0c23q8cac64nk2pdqd0vz43f73lvrpqssye9028v6ht9du8x3l7r2v7np7r2vg43npa2w4mm5ltnrswxx7v8xpgpl6w5cpshksctndpkkz6tv8ghj7mtpd9kxymmc9e6x2undd9hxzmpwd35kw6r5de5kueeww3hkgcte8g6rgvc9u30nw
+sudo docker exec -it lnfi-litd tapcli --rpcserver=localhost:8443 --network=regtest --tlscertpath=/root/.lit/tls.cert --macaroonpath=/root/.lit/tapd/data/regtest/admin.macaroon assets send --addr taprt1qqqszqspqqzzqrrqrzd0xntf4szr0qg7eah4hp4wlzeq9pdkgxcfppqezv4k3frhq5ss8prqv2fmgtl33y24pkrprm0gp8ht4dcvns79am30mdtwp8pckyxuqcss93rvdz6yq35ddzfvxs83snyts6ae09szdzpec67fr2decm88penypqssyy6aucj4907ejn855x0tcx3376nsevahkzjugx03xv77akykxkzxpgpl6w5cpshksctndpkkz6tv8ghj7mtpd9kxymmc9e6x2undd9hxzmpwd35kw6r5de5kueeww3hkgcte8g6rgvc9vghjz
 ```
 
 (3) Confirm that the assets have been received by the User
@@ -37,20 +38,20 @@ Get the pubkeys of each instance
 `lncli --network=regtest --rpcserver=localhost:10010 getinfo`
 
 Ex:
-02ab65c8c7ab5a8f1248b4829809f392f537ab3f316844078949564a2f4d67208e
+03864e9cf12c8d0bdaa85784f3ba5c198a0bd99bda74a6400f5a44ada40b788cb4
 
-Then add the peer (setupMac.sh will take care of this now)
-`docker exec -it lnfi-litd lncli --rpcserver=localhost:10009 --network=regtest connect 02ab65c8c7ab5a8f1248b4829809f392f537ab3f316844078949564a2f4d67208e@user-litd:9736`
+Then add the peer
+`docker exec -it lnfi-litd lncli --rpcserver=localhost:10009 --network=regtest connect 03864e9cf12c8d0bdaa85784f3ba5c198a0bd99bda74a6400f5a44ada40b788cb4@user-litd:9736`
 
 # Create the LN Wallets on Each Side
 
 # Open a Regular Lightning Network Channel
-`docker exec -it litd lncli --rpcserver=localhost:10009 --network=regtest openchannel --node_key=02ab65c8c7ab5a8f1248b4829809f392f537ab3f316844078949564a2f4d67208e --connect=user-litd:9736 --local_amt=5000000`
+`docker exec -it lnfi-litd lncli --rpcserver=localhost:10009 --network=regtest openchannel --node_key=03864e9cf12c8d0bdaa85784f3ba5c198a0bd99bda74a6400f5a44ada40b788cb4 --connect=user-litd:9736 --local_amt=5000000`
 
 Note: You can also just use the `--push_amt` flag and use one command below.
 
 # Open a Taproot Asset Channel
 
-`sudo docker exec -it lnfi-litd litcli --rpcserver=localhost:8443 --macaroonpath=/root/.lit/tapd/data/regtest/admin.macaroon --network=regtest ln fundchannel --node_key=02ab65c8c7ab5a8f1248b4829809f392f537ab3f316844078949564a2f4d67208e --asset_amount=150 --asset_id=6637690c5200b73f75ddab5efa5b0a64c3e426e4cc7a669da46e6ede447e233d`
+`sudo docker exec -it lnfi-litd litcli --rpcserver=localhost:8443 --macaroonpath=/root/.lnd/data/chain/bitcoin/regtest/admin.macaroon --network=regtest ln fundchannel --node_key=03864e9cf12c8d0bdaa85784f3ba5c198a0bd99bda74a6400f5a44ada40b788cb4 --asset_amount=150 --asset_id=95c2c09ef35cdc5bcf5d53338b1f97eca997dfa1214db22029da42447126fe15`
 
-sudo docker exec -it lnfi-litd litcli --rpcserver=localhost:8443 --macaroonpath=/root/.lit/tapd/data/regtest/admin.macaroon --basedir=/root/.lit/tapd --network=regtest ln fundchannel --node_key=02ab65c8c7ab5a8f1248b4829809f392f537ab3f316844078949564a2f4d67208e --asset_amount=150 --asset_id=6637690c5200b73f75ddab5efa5b0a64c3e426e4cc7a669da46e6ede447e233d
+`sudo docker exec -it lnfi-litd tapcli --rpcserver=localhost:10029 --macaroonpath=/root/.lit/tapd/data/regtest/admin.macaroon --network=regtest ln fundchannel --node_key= --asset_amount=150 --asset_id=0`

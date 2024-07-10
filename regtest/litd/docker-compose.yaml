@@ -77,6 +77,12 @@ services:
         --lnd.bitcoind.rpcpass=polarpass
         --lnd.bitcoind.zmqpubrawblock=tcp://bitcoind-backend:28334
         --lnd.bitcoind.zmqpubrawtx=tcp://bitcoind-backend:28335
+        --lnd.protocol.option-scid-alias
+        --lnd.protocol.zero-conf
+        --lnd.protocol.simple-taproot-chans
+        --lnd.protocol.simple-taproot-overlay-chans
+        --lnd.protocol.custom-message=17
+        --lnd.accept-keysend
         --taproot-assets.debuglevel=debug
         --taproot-assets.rpclisten=0.0.0.0:10029
         --taproot-assets.restlisten=0.0.0.0:8089
@@ -156,6 +162,12 @@ services:
         --lnd.bitcoind.rpcpass=polarpass
         --lnd.bitcoind.zmqpubrawblock=tcp://bitcoind-backend:28334
         --lnd.bitcoind.zmqpubrawtx=tcp://bitcoind-backend:28335
+        --lnd.protocol.option-scid-alias
+        --lnd.protocol.zero-conf
+        --lnd.protocol.simple-taproot-chans
+        --lnd.protocol.simple-taproot-overlay-chans
+        --lnd.protocol.custom-message=17
+        --lnd.accept-keysend
         --taproot-assets.debuglevel=debug
         --taproot-assets.rpclisten=0.0.0.0:10030
         --taproot-assets.restlisten=0.0.0.0:8090

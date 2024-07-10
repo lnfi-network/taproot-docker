@@ -44,7 +44,7 @@ services:
       USERID: ${USERID:-1000}
       GROUPID: ${GROUPID:-1000}
     stop_grace_period: 2m
-    image: lightninglabs/lightning-terminal:v0.13.2-alpha.rc2
+    image: lightninglabs/lightning-terminal:v0.13.99-alpha.rc2
     container_name: lnfi-litd
     hostname: lnfi-litd
     command: >-
@@ -123,7 +123,7 @@ services:
       USERID: ${USERID:-1000}
       GROUPID: ${GROUPID:-1000}
     stop_grace_period: 2m
-    image: lightninglabs/lightning-terminal:v0.13.2-alpha.rc2
+    image: lightninglabs/lightning-terminal:v0.13.99-alpha.rc2
     container_name: user-litd
     hostname: user-litd
     command: >-
@@ -173,6 +173,7 @@ services:
         --taproot-assets.tapddir=/root/.lit/tapd
         --taproot-assets.tlskeypath=/root/.lit/tls.key
         --taproot-assets.tlscertpath=/root/.lit/tls.cert
+        --taproot-assets.lnd.host=127.0.0.1:10010
 
         
     restart: always

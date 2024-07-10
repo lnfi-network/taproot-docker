@@ -1,0 +1,13 @@
+tapd-macaroonhex=
+tapd-tlscerthex=
+
+lnd-macaroonhex=
+lnd-tlscerthex=
+
+user-tapd-macaroon=
+user-tapd-tlscert=
+
+user-lnd-macaroon=
+user-lnd-tlscert=
+
+asset-id=6637690c5200b73f75ddab5efa5b0a64c3e426e4cc7a669da46e6ede447e233d

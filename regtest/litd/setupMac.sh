@@ -62,26 +62,43 @@ else
 
   sudo docker exec -it user-litd tapcli --rpcserver=localhost:8444 --network=regtest --tlscertpath=/root/.lit/tls.cert --macaroonpath=/root/.lit/tapd/data/regtest/admin.macaroon universe sync --universe_host=lnfi-litd:8443
   
+  echo "======== add user node as peer of service ========"
+  sudo docker exec -it lnfi-litd lncli --rpcserver=localhost:10009 --network=regtest connect 02ab65c8c7ab5a8f1248b4829809f392f537ab3f316844078949564a2f4d67208e@user-litd:9736
+  
 #   echo "======== sending lnfi to user ========="
 #   sudo docker exec -it user-litd tapcli --rpcserver=localhost:8444 --network=regtest --tapddir=/root/.litd/tapd addrs new --asset_id
 fi
 
 
-echo "======== lnd tls cert hex ========="
+echo "======== service lnd tls cert hex ========="
 alice_cert=$(sudo docker exec -it lnfi-litd cat /root/.lnd/tls.cert | xxd -p -c 1000 | tr -d '\n')
-echo "alice cert => $alice_cert"
+echo "lnfi cert => $alice_cert"
 
-echo "======== lnd admin macaroon hex ========="
+echo "======== service lnd admin macaroon hex ========="
 alice_macaroon=$(sudo docker exec -it lnfi-litd xxd -p -c 1000 /root/.lnd/data/chain/bitcoin/regtest/admin.macaroon | tr -d '\n')
-echo "alice macaroon => $alice_macaroon"
+echo "lnfi macaroon => $alice_macaroon"
 
-echo "======== tapd tls cert hex ========="
+echo "======== service tapd tls cert hex ========="
 tapd_cert=$(sudo docker exec -it lnfi-litd cat /root/.lit/tls.cert | xxd -p -c 1000 | tr -d '\n')
 echo "tapd cert => $tapd_cert"
 
-echo "======== tapd admin macaroon hex ========="
+echo "======== service tapd admin macaroon hex ========="
 tapd_macaroon=$(sudo docker exec -it lnfi-litd xxd -p -c 1000 /root/.lit/tapd/data/regtest/admin.macaroon | tr -d '\n')
 echo "tapd macaroon => $tapd_macaroon"
+
+echo "======== user lnd tls cert hex ========="
+alice_cert=$(sudo docker exec -it user-litd cat /root/.lnd/tls.cert | xxd -p -c 1000 | tr -d '\n')
+echo "user cert => $alice_cert"
+
+echo "======== user lnd admin macaroon hex ========="
+alice_macaroon=$(sudo docker exec -it user-litd xxd -p -c 1000 /root/.lnd/data/chain/bitcoin/regtest/admin.macaroon | tr -d '\n')
+echo "user macaroon => $alice_macaroon"
+
+echo "======== user tapd tls cert hex ========="
+tapd_cert=$(sudo docker exec -it user-litd cat /root/.lit/tls.cert | xxd -p -c 1000 | tr -d '\n')
+
+echo "======== user tapd admin macaroon hex ========="
+tapd_macaroon=$(sudo docker exec -it user-litd xxd -p -c 1000 /root/.lit/tapd/data/regtest/admin.macaroon | tr -d '\n')
 
 # start auto mining
 sudo docker exec -d -u bitcoin bitcoind-backend bash -c "/home/bitcoin/mining.sh"

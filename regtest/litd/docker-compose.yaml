@@ -102,7 +102,9 @@ services:
         --taproot-assets.tapddir=/root/.lit/tapd
         --taproot-assets.tlskeypath=/root/.lit/tls.key
         --taproot-assets.tlscertpath=/root/.lit/tls.cert
-
+        --taproot-assets.experimental.rfq.priceoracleaddress=use_mock_price_oracle_service_promise_to_not_use_on_mainnet
+        --taproot-assets.experimental.rfq.skipacceptquotepricecheck
+        --taproot-assets.experimental.rfq.mockoraclecentpersat=1
     restart: always
     volumes:
       - ../volumes/lnfi/lit:/root/.lit
@@ -186,7 +188,9 @@ services:
         --taproot-assets.tlskeypath=/root/.lit/tls.key
         --taproot-assets.tlscertpath=/root/.lit/tls.cert
         --taproot-assets.lnd.host=127.0.0.1:10010
-
+        --taproot-assets.experimental.rfq.priceoracleaddress=use_mock_price_oracle_service_promise_to_not_use_on_mainnet
+        --taproot-assets.experimental.rfq.skipacceptquotepricecheck
+        --taproot-assets.experimental.rfq.mockoraclecentpersat=1
         
     restart: always
     volumes:

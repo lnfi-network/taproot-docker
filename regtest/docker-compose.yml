@@ -63,7 +63,7 @@ services:
       USERID: ${USERID:-1000}
       GROUPID: ${GROUPID:-1000}
     stop_grace_period: 2m
-    image: lightninglabs/lnd:v0.17.4-beta
+    image: lightninglabs/lnd:v0.18.0-beta
     container_name: regtest-alice-lnd
     hostname: regtest-alice-lnd
     command: >-
@@ -103,7 +103,7 @@ services:
       USERID: ${USERID:-1000}
       GROUPID: ${GROUPID:-1000}
     stop_grace_period: 2m
-    image: lightninglabs/lnd:v0.17.4-beta
+    image: lightninglabs/lnd:v0.18.0-beta
     container_name: regtest-bob-lnd
     hostname: regtest-bob-lnd
     command: >-
